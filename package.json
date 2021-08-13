@@ -1,0 +1,29 @@
+{
+  "name": "concessionaria",
+  "version": "1.0.0",
+  "description": "API feita para estudo",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CaioVinicius7/api-concessionaria.git"
+  },
+  "author": "caio vinícius",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CaioVinicius7/api-concessionaria/issues"
+  },
+  "homepage": "https://github.com/CaioVinicius7/api-concessionaria#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "consign": "^0.1.6",
+    "express": "^4.17.1",
+    "moment": "^2.29.1",
+    "mysql2": "^2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
