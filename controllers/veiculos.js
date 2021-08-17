@@ -1,4 +1,6 @@
 const Veiculos = require("../models/veiculos");
+const { regrasValidacao, regrasValidacaoEditar, validationResult } = require("../validations/validacoes");
+
 
 module.exports = (app) => {
 
@@ -10,7 +12,7 @@ module.exports = (app) => {
 
    // Lista todos os veiculos por tipo 
    app.get("/listarVeiculos/:tipo", (req, res) => {
-      const tipo = req.params.tipo; 
+      const tipo = req.params; 
       Veiculos.listarVeiculosTipo(tipo, res);
    });
 
@@ -27,19 +29,42 @@ module.exports = (app) => {
    });
 
    // Adiciona um novo veiculo
-   app.post("/AdicionarVeiculo", (req, res) => {
+   app.post("/AdicionarVeiculo", regrasValidacao, (req, res) => {
+
+      // Guarda os erros de validação
+      const validationErros = validationResult(req);
+
+      // Verifica se ocorreu algum erro
+      if(!validationErros.isEmpty()){
+         return res.status(400).json({ errors: validationErros.array() });
+      }
+
       const dados = req.body;
       Veiculos.adicionarVeiculo(dados, res);
    });
 
    // Edita um veiculo
-   app.patch("/editarVeiculo/:id", (req, res) => {
-      res.send("Edita veiculo");
+   app.patch("/editarVeiculo/:id", regrasValidacaoEditar, (req, res) => {
+
+      // Guarda os erros de validação
+      const validationErros = validationResult(req);
+
+      // Verifica se ocorreu algum erro
+      if(!validationErros.isEmpty()){
+         return res.status(400).json({ errors: validationErros.array() });
+      }
+
+      const id = parseInt(req.params.id);
+      const dados = req.body;
+
+      Veiculos.editarVeiculo(id, dados, res);
    });
 
    // Exclui um veiculo
    app.delete("/excluirVeiculo/:id", (req, res) => {
-      res.send("Exclui veiculo");
+      const id = req.params.id;
+
+      Veiculos.excluirVeiculo(id, res);
    });
 
 }
