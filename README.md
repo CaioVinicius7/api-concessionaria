@@ -85,7 +85,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 <a href="https://www.facebook.com/caio.pereira.94695">
  <img style="border-radius: 50%;" src="https://scontent.fguj3-1.fna.fbcdn.net/v/t1.6435-9/142052074_3709793379112018_4012923653098423199_n.jpg?_nc_cat=105&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=M6BAMRIcOXMAX82huD8&_nc_ht=scontent.fguj3-1.fna&oh=0320f7a4e1ed79a4938fce6918fcf9f3&oe=61421F3E" width="100px;" alt=""/>
  <br />
- <sub><b>Caio Vinícius</b></sub></a>
+ <h2><b>Caio Vinícius</b></h2></a>
 
 [![Linkedin Badge](https://img.shields.io/badge/-caio%20pereira-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/tgmarinho/)](https://www.linkedin.com/in/caio-pereira-87a761200) 
 [![Gmail Badge](https://img.shields.io/badge/-caio1525pereira@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:caio1525pereira@gmail.com)](mailto:caio1525pereira@gmail.com)
