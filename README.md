@@ -31,14 +31,14 @@
 
 |       Funcionalidade       |                           Descrição                           |           Endpoint           | metódo | parâmetro opcional? |
 |:--------------------------:|:-------------------------------------------------------------:|:----------------------------:|:------:|:-------------------:|
-| adicionar um veículo       | adiciona um novo registro referente a um veículo              | /adicionarVeiculo            |  post  |         sim         |
-| editar um veículo          | edita o registro referente a um veículo                       | /editarVeiculo/id            |  patch |         sim         |
-| deletar um veículo         | exclui o registro referente a um veículo                      | /excluirVeiculos/id          | delete |         sim         |
-| vender veiculo             | edita o status de um veículo para vendido                     | /veiculoVendido/id           |  patch |         sim         |
-| listar veiculos            | lista todos os veículos registrados                           | /listarVeiculos/status       |   get  |         não         |
-| listar veículos por tipo   | lista todos os veículos registrados com um tipo específico    | /listarVeiculo/tipo          |   get  |         sim         |
-| listar veículos por modelo | lista todos os veículos registrados com um modelo específico  | /listarVeiculosModelo/modelo |   get  |         sim         |
-| listar veículo por id      | lista um veículos especifico por id                           | /listarVeiculo/id            |   get  |         sim         |
+| adicionar um veículo       | adiciona um novo registro referente a um veículo              | /adicionarVeiculo            |  post  |         não         |
+| editar um veículo          | edita o registro referente a um veículo                       | /editarVeiculo/id            |  patch |         não         |
+| deletar um veículo         | exclui o registro referente a um veículo                      | /excluirVeiculos/id          | delete |         não         |
+| vender veiculo             | edita o status de um veículo para vendido                     | /veiculoVendido/id           |  patch |         não         |
+| listar veiculos            | lista todos os veículos registrados                           | /listarVeiculos/status       |   get  |         sim         |
+| listar veículos por tipo   | lista todos os veículos registrados com um tipo específico    | /listarVeiculo/tipo          |   get  |         não         |
+| listar veículos por modelo | lista todos os veículos registrados com um modelo específico  | /listarVeiculosModelo/modelo |   get  |         não         |
+| listar veículo por id      | lista um veículos especifico por id                           | /listarVeiculo/id            |   get  |         não         |
 
 ---
 
