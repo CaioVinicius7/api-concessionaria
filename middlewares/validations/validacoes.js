@@ -3,7 +3,7 @@ const { body, validationResult } = require("express-validator");
 // Regras de validação ao registar veiculo
 const regrasValidacao = [
    body("tipo").isLength({min: 3}).withMessage("O campo tipo deve ter pelo menos 3 caracteres"),
-   body("modelo").isLength({min: 5}).withMessage("O campo modelo deve ter pelo menos 5 caracteres"),
+   body("modelo").isLength({min: 3}).withMessage("O campo modelo deve ter pelo menos 3 caracteres"),
    body("fabricante").isLength({min: 3}).withMessage("O fabricante tipo deve ter pelo menos 3 caracteres"),
    body("ano").isNumeric().withMessage("O campo ano deve ser númerico"),
    body("preco").isNumeric().withMessage("O campo preço ser númerico"),
@@ -18,7 +18,12 @@ const regrasValidacao = [
    body("consumoRodoviario").isNumeric().withMessage("O campo consumo rodoviario precisa ser númerico"),
    body("descricao").isLength({min: 10}).withMessage("O campo descrição precisa ter pelo menos 10 caracteres"),
    body("observacao").optional({nullable: true}).isLength({min: 10}).withMessage("O campo observação precisa ter pelo menos 10 caracteres"),
-   body("status").isLength({min: 5}).withMessage("O campo status precisa ter pelo menos 5 caracteres"),
+   body("status").custom((value) => {
+      if(value && (value != "à venda" && value != "vendido")){
+         return Promise.reject("O campo status precisa conter o valor à venda ou vendido");
+      }
+      return true;
+   }),
    body("dataVenda").optional({nullable: true}).isLength({min: 10, max: 10}).withMessage("Preencha o campo data de venda de forma correta"),
    body("dataRegistro").custom((value) => {
       if(value || value === null || value === ""){
@@ -70,4 +75,9 @@ const regrasValidacaoEditar = [
 
 ];
 
-module.exports = { regrasValidacao, regrasValidacaoEditar, validationResult };
+// Regras de validação da venda
+const regrasValidacaoVenda = [
+   body("dataVenda").optional({nullable: true}).isLength({min: 10, max: 10}).withMessage("Preencha o campo data de venda de forma correta")
+];
+
+module.exports = { regrasValidacao, regrasValidacaoEditar, regrasValidacaoVenda, validationResult };

@@ -6,6 +6,7 @@ module.exports = () => {
 
    const app = express();
 
+   app.use(bodyParser.urlencoded({ extended: true }));
    app.use(bodyParser.json());
 
    // usa o consign pra incluir todos os controllers dentro de nosso app

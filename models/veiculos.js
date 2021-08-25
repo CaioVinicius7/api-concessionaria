@@ -1,5 +1,6 @@
 const conexao = require("./conexao");
 const moment = require("moment");
+const fs = require("fs");
 
 class Veiculos{
 
@@ -31,9 +32,14 @@ class Veiculos{
    }
 
    // Lista todos os veiculos registrados no banco de dados
-   listarVeiculos(res){
+   listarVeiculos(req, res){
 
-      const sql = "SELECT * FROM veiculos WHERE status = 'a venda'";
+      // Filtro do select
+      let status = req.params.status;
+
+      status = (status === "venda") ? "WHERE status = 'à venda' " : (status === "vendido") ? "WHERE status = 'vendido' " : "";
+
+      const sql = `SELECT * FROM veiculos ${status}`;
 
       conexao.query(sql, (erro, result) => {
 
@@ -99,7 +105,7 @@ class Veiculos{
    // Lista todos os veiculos com o modelo desejado
    listarVeiculosModelo(modelo, res){
 
-      const sql = `SELECT * FROM veiculos WHERE modelo = '${modelo}' AND status = 'a venda'`;
+      const sql = `SELECT * FROM veiculos WHERE modelo like '${modelo}%' AND status = 'a venda'`;
       
       conexao.query(sql, (erro, result) => {
          
@@ -136,12 +142,21 @@ class Veiculos{
 
       // Utiliza a moment para pegar o momento do registro e formatar a data de venda para salvar no bd
       const dataRegistro = moment().format("YYYY-MM-DD HH:mm:ss");
+      
+      var status = dados.status;
+
+      // Veridica se a data de venda existe, caso exista formata e define o status como vendido, se a data não existir mas o status for vendido coloca a data atual
       if(dados.dataVenda){
-         var dataVendaFormatada = moment(dados.dataVenda, "DD/MM/YYYY").format("YYYY-MM-DD");
+         var dataVenda = moment(dados.dataVenda, "DD/MM/YYYY").format("YYYY-MM-DD");
+         status = "vendido";
+      }else if(!dados.dataVenda && dados.status === "vendido"){
+         dataVenda = moment().format("YYYY-MM-DD");
+         status = "vendido";
       }
 
+
       // Salva os dados formatados em um novo objeto com o restante das informações 
-      const registroFormatado = { ...dados, dataRegistro, dataVenda: dataVendaFormatada };
+      const registroFormatado = { ...dados, dataRegistro, dataVenda, status };
 
       const sql = "INSERT INTO veiculos SET ?";
 
@@ -158,29 +173,88 @@ class Veiculos{
 
    }
 
-   editarVeiculo(id, dados, res){
+   venderVeiculo(id, dataVenda, res){
 
-      // Formata as data para salvar no banco
-      if(dados.dataVenda){
-         var dataVendaFormatada = moment(dados.dataVenda, "DD/MM/YYYY").format("YYYY-MM-DD");
+      let status = "vendido";
 
-         // Salva os dados formatados em um novo objeto com o restante das informações 
-         dados = { ...dados, dataVenda: dataVendaFormatada };
+      // Formata a data de venda caso ela exista a data de venda
+      (dataVenda) ? dataVenda = moment(dataVenda, "DD/MM/YYYY").format("YYYY-MM-DD"): dataVenda = moment().format("YYYY-MM-DD");
 
-         if(!dados.status || dados.status !== "vendido"){
-            dados = { ...dados, dataVenda: dataVendaFormatada, status: "vendido" };
+      const dadosVenda = { dataVenda, status };
+
+      const sqlVerifica = "SELECT idVeiculo, imagem FROM veiculos WHERE idVeiculo = ?";
+
+      conexao.query(sqlVerifica, id, (erro, result) => {
+
+         if(!erro && result.length >= 1){
+
+            const sql = "UPDATE veiculos SET ? WHERE idVeiculo = ?";
+
+            conexao.query(sql, [dadosVenda, id], (erro, result) => {
+
+               if(erro){
+                  res.status(400).json(erro);
+               }else{
+                  res.status(200).json({ id, ...dadosVenda });
+               }
+
+            });
+
+         }else{
+            res.status(400).json({erro: "não foi encontrado nenhum veículo com esse id"});
          }
 
-      }
+      });
 
-      const sql = "UPDATE veiculos SET ? WHERE idVeiculo = ?";
+   }
 
-      conexao.query(sql, [dados, id], (erro, result) => {
+   editarVeiculo(id, dados, res){
 
-         if(erro){
-            res.status(400).json(erro);
+      const sqlVerifica = "SELECT idVeiculo, imagem FROM veiculos WHERE idVeiculo = ?";
+
+      conexao.query(sqlVerifica, id, (erro, result) => {
+
+         if(!erro && result.length >= 1){
+
+            const imagemAntiga = result[0].imagem;
+
+            // Exclui a imagem antiga que era associada ao veículo
+            fs.unlink(imagemAntiga, (erro) => {
+   
+               if(erro){
+                  res.status(404).json({ "erro": "Imagem associada com o registro não encontrada para ser excluida" });
+               }
+                  
+            });
+
+            var status = dados.status;
+
+            // Veridica se a data de venda existe, caso exista formata e define o status como vendido, se a data não existir mas o status for vendido coloca a data atual
+            if(dados.dataVenda){
+               var dataVenda = moment(dados.dataVenda, "DD/MM/YYYY").format("YYYY-MM-DD");
+               status = "vendido";
+            }else if(!dados.dataVenda && dados.status === "vendido"){
+               dataVenda = moment().format("YYYY-MM-DD");
+               status = "vendido";
+            }
+            
+            // Salva os dados formatados em um novo objeto com o restante das informações 
+            const dadosFormatados = { ...dados, dataVenda, status };
+
+            const sql = "UPDATE veiculos SET ? WHERE idVeiculo = ?";
+      
+            conexao.query(sql, [dadosFormatados, id], (erro, result) => {
+      
+               if(erro){
+                  res.status(400).json(erro);
+               }else{
+                  res.status(200).json({ id, ...dadosFormatados });
+               }
+      
+            });
+
          }else{
-            res.status(200).json({ id, ...dados });
+            res.status(400).json({erro: "não foi encontrado nenhum veículo com esse id"});
          }
 
       });
@@ -189,17 +263,42 @@ class Veiculos{
 
    excluirVeiculo(id, res){
 
-      const sql = "DELETE FROM veiculos WHERE idVeiculo = ?";
-      
-      conexao.query(sql, id, (erro, result) => {
+      const sqlVerifica = "SELECT idVeiculo, imagem FROM veiculos WHERE idVeiculo = ?";
 
-         if(erro){
-            res.status(400).json(erro);
+      conexao.query(sqlVerifica, id, (erro, result) => {
+
+         if(!erro && result.length >= 1){
+
+            const imagemAntiga = result[0].imagem;
+
+            // Apaga a imagem do diretório, caso ocorra tudo certo apaga os dados referentes ao id
+            fs.unlink(imagemAntiga, (erro) => {
+
+               if(erro){
+                  res.status(404).json({ "erro": "Imagem associada com o registro não encontrada para ser excluida" });
+               }
+               
+            });
+            
+            const sql = "DELETE FROM veiculos WHERE idVeiculo = ?";
+      
+            conexao.query(sql, id, (erro, result) => {
+
+               if(erro){
+                  res.status(400).json(erro);
+               }else{
+                  res.status(200).json({id});
+               }
+
+            });
+            
+            
          }else{
-            res.status(200).json({id});
+            res.status(400).json({erro: "não foi encontrado nenhum veículo com esse id"});
          }
 
       });
+
 
    }
 
