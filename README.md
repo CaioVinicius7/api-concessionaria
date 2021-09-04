@@ -24,21 +24,37 @@
 	-
 - [x] Exclusão de veículos
 	-
-- [ ] Sistema de login
+- [x] Cadastro de usuários
+	-
+- [x] Listagem de usuários 
+	-
+- [x] Edição de usuários 
+	-
+- [x] Exclusão de Usuários
+	-
+- [X] Sistema de login
+	-
+- [ ] Sistema de logout
 	-
 
 ### Rotas
 
-|       Funcionalidade       |                           Descrição                           |           Endpoint           | metódo | parâmetro opcional? |
-|:--------------------------:|:-------------------------------------------------------------:|:----------------------------:|:------:|:-------------------:|
-| adicionar um veículo       | adiciona um novo registro referente a um veículo              | /adicionarVeiculo            |  post  |         não         |
-| editar um veículo          | edita o registro referente a um veículo                       | /editarVeiculo/id            |  patch |         não         |
-| deletar um veículo         | exclui o registro referente a um veículo                      | /excluirVeiculos/id          | delete |         não         |
-| vender veiculo             | edita o status de um veículo para vendido                     | /veiculoVendido/id           |  patch |         não         |
-| listar veiculos            | lista todos os veículos registrados                           | /listarVeiculos/status       |   get  |         sim         |
-| listar veículos por tipo   | lista todos os veículos registrados com um tipo específico    | /listarVeiculo/tipo          |   get  |         não         |
-| listar veículos por modelo | lista todos os veículos registrados com um modelo específico  | /listarVeiculosModelo/modelo |   get  |         não         |
-| listar veículo por id      | lista um veículos especifico por id                           | /listarVeiculo/id            |   get  |         não         |
+|       Funcionalidade       |                            Descrição                            |           Endpoint           | metódo | parâmetro opcional? |
+|:--------------------------:|:---------------------------------------------------------------:|:----------------------------:|:------:|:-------------------:|
+| adicionar um veículo       | adiciona um novo registro referente a um veículo                | /adicionarVeiculo            |  post  |    sem parâmetro    |
+| editar um veículo          | edita um registro referente a um veículo                        | /editarVeiculo/id            |  patch |         não         |
+| deletar um veículo         | exclui um registro referente a um veículo                       | /excluirVeiculos/id          | delete |         não         |
+| vender veiculo             | edita o status de um veículo para vendido                       | /veiculoVendido/id           |  patch |         não         |
+| listar veiculos            | lista todos os veículos registrados                             | /listarVeiculos/status       |   get  |         sim         |
+| listar veículos por tipo   | lista todos os veículos registrados com um tipo específico      | /listarVeiculo/tipo          |   get  |         não         |
+| listar veículos por modelo | lista todos os veículos registrados com um modelo específico    | /listarVeiculosModelo/modelo |   get  |         não         |
+| listar veículo por id      | lista um veículos especifico por id                             | /listarVeiculo/id            |   get  |         não         |
+| adicionar um usuário       | adiciona um novo registro referente a um usuário administrativo | /adicionarUsuario            |  post  |    sem parâmetro    |
+| editar um usuário          | edita um registro referente a um usuário administrativo         | /editarUsuario/id            |  patch |         não         |
+| deletar um usuário         | exclui um registro referente a um usuário administrativo        | /excluirUsuario/id           | delete |         não         |
+| listar todos os usuários   | lista todos os usuários administrativos registrados             | /listarUsuarios/usuario      |   get  |         sim         |
+| listar usuário por id      | lista um usuário administrativo por id                          | /listarUsuario/id            |   get  |         não         |
+| login de um usuário        | faz o login de um usuário administrativo                        | /login                       |  post  |    sem parâmetro    |
 
 ---
 
@@ -78,6 +94,11 @@ As seguintes ferramentas foram usadas na construção do projeto:
 - [express-validator](https://express-validator.github.io/docs/)
 - [multer](https://github.com/expressjs/multer)
 - [mysql](https://github.com/mysqljs/mysql)
+- [jwt](https://github.com/auth0/node-jsonwebtoken#reademe)
+- [bcrypt](https://github.com/kelektiv/node.bcrypt.js)
+- [dotenv](https://github.com/motdotla/dotenv)
+- [nodemailer](https://nodemailer.com/about/)
+
 
 ### Autor
 ---

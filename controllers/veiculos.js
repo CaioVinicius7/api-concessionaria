@@ -1,6 +1,7 @@
 const Veiculos = require("../models/veiculos");
-const { regrasValidacao, regrasValidacaoEditar, regrasValidacaoVenda, validationResult } = require("../middlewares/validations/validacoes");
+const { regrasValidacao, regrasValidacaoEditar, regrasValidacaoVenda, validationResult } = require("../middlewares/validations/veiculos");
 const { upload } = require("../middlewares/uploads/uploadImagem");
+const login = require("../middlewares/autentication/login");
 const fs = require("fs");
 
 module.exports = (app) => {
@@ -29,7 +30,7 @@ module.exports = (app) => {
    });
 
    // Adiciona um novo veiculo
-   app.post("/AdicionarVeiculo", [upload.single("image"), regrasValidacao], async (req, res) => {
+   app.post("/AdicionarVeiculo", login, [upload.single("image"), regrasValidacao], async (req, res) => {
 
       // Guarda os erros de validação
       const validationErros = validationResult(req);
@@ -52,7 +53,7 @@ module.exports = (app) => {
    });
 
    // Define o status de um veículo como vendido
-   app.patch("/veiculoVendido/:id", regrasValidacaoVenda, async (req, res) => {
+   app.patch("/veiculoVendido/:id", login, regrasValidacaoVenda, async (req, res) => {
 
       const id = req.params.id;
       const dataVenda = req.body.dataVenda;
@@ -68,7 +69,7 @@ module.exports = (app) => {
    });
 
    // Edita um veiculo
-   app.patch("/editarVeiculo/:id", [upload.single("image"), regrasValidacaoEditar], async (req, res) => {
+   app.patch("/editarVeiculo/:id", login, [upload.single("image"), regrasValidacaoEditar], async (req, res) => {
 
       // Guarda os erros de validação
       const validationErros = validationResult(req);
@@ -92,7 +93,7 @@ module.exports = (app) => {
    });
 
    // Exclui um veiculo
-   app.delete("/excluirVeiculo/:id", async (req, res) => {
+   app.delete("/excluirVeiculo/:id", login, async (req, res) => {
       const id = req.params.id;
 
       await Veiculos.excluirVeiculo(id, res);

@@ -1,14 +1,12 @@
 const mysql = require("mysql2");
-const dadosConexao = require("../config/dadosConexao.json");
-
 
 // Recebe a conexão com o banco de dados
 const conexao = mysql.createConnection({
-   host: dadosConexao.host,
-   port: dadosConexao.port,
-   user: dadosConexao.user,
-   password: dadosConexao.password,
-   database: dadosConexao.database
+   host: process.env.HOST,
+   port: process.env.PORT,
+   user: process.env.USER,
+   password: process.env.PASSWORD,
+   database: process.env.DB
 });
 
 module.exports = conexao;
