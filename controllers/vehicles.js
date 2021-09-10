@@ -1,6 +1,6 @@
 const Vehicles = require("../models/Vehicles");
 const { validationRules, validationRulesEdit, validationResult, validationRulesSale } = require("../middlewares/validations/Vehicles");
-const { upload } = require("../middlewares/uploads/uploadImagem");
+const { upload } = require("../middlewares/uploads/uploadImage");
 const login = require("../middlewares/autentication/login");
 const fs = require("fs");
 
