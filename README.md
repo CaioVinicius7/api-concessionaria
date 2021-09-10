@@ -41,19 +41,19 @@
 
 |       Funcionalidade       |                            Descrição                            |           Endpoint           | metódo | parâmetro opcional? |
 |:--------------------------:|:---------------------------------------------------------------:|:----------------------------:|:------:|:-------------------:|
-| adicionar um veículo       | adiciona um novo registro referente a um veículo                | /adicionarVeiculo            |  post  |    sem parâmetro    |
-| editar um veículo          | edita um registro referente a um veículo                        | /editarVeiculo/id            |  patch |         não         |
-| deletar um veículo         | exclui um registro referente a um veículo                       | /excluirVeiculos/id          | delete |         não         |
-| vender veiculo             | edita o status de um veículo para vendido                       | /veiculoVendido/id           |  patch |         não         |
-| listar veiculos            | lista todos os veículos registrados                             | /listarVeiculos/status       |   get  |         sim         |
-| listar veículos por tipo   | lista todos os veículos registrados com um tipo específico      | /listarVeiculo/tipo          |   get  |         não         |
-| listar veículos por modelo | lista todos os veículos registrados com um modelo específico    | /listarVeiculosModelo/modelo |   get  |         não         |
-| listar veículo por id      | lista um veículos especifico por id                             | /listarVeiculo/id            |   get  |         não         |
-| adicionar um usuário       | adiciona um novo registro referente a um usuário administrativo | /adicionarUsuario            |  post  |    sem parâmetro    |
-| editar um usuário          | edita um registro referente a um usuário administrativo         | /editarUsuario/id            |  patch |         não         |
-| deletar um usuário         | exclui um registro referente a um usuário administrativo        | /excluirUsuario/id           | delete |         não         |
-| listar todos os usuários   | lista todos os usuários administrativos registrados             | /listarUsuarios/usuario      |   get  |         sim         |
-| listar usuário por id      | lista um usuário administrativo por id                          | /listarUsuario/id            |   get  |         não         |
+| adicionar um veículo       | adiciona um novo registro referente a um veículo                | /addVehicle                  |  post  |    sem parâmetro    |
+| editar um veículo          | edita um registro referente a um veículo                        | /editVehicle/id              |  patch |         não         |
+| deletar um veículo         | exclui um registro referente a um veículo                       | /deleteVehicle/id            | delete |         não         |
+| vender veiculo             | edita o status de um veículo para vendido                       | /sellVehicle/id              |  patch |         não         |
+| listar veiculos            | lista todos os veículos registrados                             | /listVehicles/status         |   get  |         sim         |
+| listar veículos por tipo   | lista todos os veículos registrados com um tipo específico      | /listVehilesByType/type      |   get  |         não         |
+| listar veículos por modelo | lista todos os veículos registrados com um modelo específico    | /listVehiclesByModel/model   |   get  |         não         |
+| listar veículo por id      | lista um veículos especifico por id                             | /listVehicle/id              |   get  |         não         |
+| adicionar um usuário       | adiciona um novo registro referente a um usuário administrativo | /addUser                     |  post  |    sem parâmetro    |
+| editar um usuário          | edita um registro referente a um usuário administrativo         | /editUser/id                 |  patch |         não         |
+| deletar um usuário         | exclui um registro referente a um usuário administrativo        | /deleteUser/id               | delete |         não         |
+| listar todos os usuários   | lista todos os usuários administrativos registrados             | /listUsers/user              |   get  |         sim         |
+| listar usuário por id      | lista um usuário administrativo por id                          | /listUser/id                 |   get  |         não         |
 | login de um usuário        | faz o login de um usuário administrativo                        | /login                       |  post  |    sem parâmetro    |
 
 ---

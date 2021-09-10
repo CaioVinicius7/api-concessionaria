@@ -1,8 +1,8 @@
 const { body, validationResult } = require("express-validator");
 
-const regrasValidacao = [
+const validationRules = [
    body("email").isEmail().withMessage("O campo e-mail deve conter um e-mail válido"),
-   body("senha").isLength({min: 8}).withMessage("O campo senha deve conter pelo menos 8 caracteres")
+   body("password").isLength({min: 8}).withMessage("O campo senha deve conter pelo menos 8 caracteres")
 ];
 
-module.exports = { regrasValidacao, validationResult };
+module.exports = { validationRules, validationResult };

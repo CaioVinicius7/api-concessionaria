@@ -1,52 +1,52 @@
 require("dotenv/config");
-const conexao = require("./conexao");
+const con = require("./connection");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptJs");
 const moment = require("moment");
 
-class Autenticacao{
+class Login{
 
-   login(dadosLogin, res){
+   login(data, res){
 
-      const sqlVerifica = "SELECT * FROM usuarios WHERE email = ?";
+      const sqlVerify = "SELECT * FROM users WHERE email = ?";
       
-      conexao.query(sqlVerifica, dadosLogin.email, (erro, result) => {
+      con.query(sqlVerify, data.email, (error, result) => {
          
-         if(erro){
-            return res.status(400).json(erro);
+         if(error){
+            return res.status(400).json(error);
          }
             
          if(result.length < 1){
-            return res.status(404).json({ erro: "nenhum usuário é cadastrado com esse e-mail" });
+            return res.status(400).json({ erro: "e-mail ou senha incorretos" });
          }
          
-         bcrypt.compare(dadosLogin.senha, result[0].senha, (erro, resultCompare) => {
+         bcrypt.compare(data.password, result[0].password, (error, resultCompare) => {
             
-            if(erro){
-               return res.status(401).json({ erro: "falha na autenticação" });
+            if(error){
+               return res.status(401).json({ erro: "e-mail ou senha incorretos" });
             }
 
             if(resultCompare){
 
-               const ultimoLogin = moment().format("YYYY-MM-DD HH:mm:ss");
+               const lastLogin = moment().format("YYYY-MM-DD HH:mm:ss");
 
-               const sql = "UPDATE usuarios SET ultimoLogin = ? WHERE idUsuario = ?";
+               const sql = "UPDATE users SET lastLogin = ? WHERE idUser = ?";
 
-               conexao.query(sql, [ultimoLogin, result[0].idUsuario]);
+               con.query(sql, [lastLogin, result[0].idUser]);
 
                // Cria o token
                const token = jwt.sign({
-                  idUsuario: result[0].idUsuario,
-                  nomeCompleto: result[0].nomeCompleto,
+                  idUser: result[0].idUser,
+                  fullName: result[0].fullName,
                   email: result[0].email 
                }, process.env.JWT_KEY, {
                   expiresIn: "1h"
                });
                
-               return res.status(200).json({ 
-                  status: "autenticado com sucesso!",
-                  token: token
-               });
+               return res.set("Authorization", token),
+                      res.status(200).json({ 
+                        status: "autenticado com sucesso!"
+                      });
 
             }
 
@@ -67,4 +67,4 @@ class Autenticacao{
 
 }
 
-module.exports = new Autenticacao;
+module.exports = new Login;

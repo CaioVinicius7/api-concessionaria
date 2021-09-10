@@ -1,16 +1,16 @@
 require("dotenv/config");
 const customExpress = require("./config/customExpress");
-const conexao = require("./models/conexao");
-const Migrations = require("./migrations/tabelas");
+const con = require("./models/connection");
+const Migrations = require("./migrations/tables");
 const app = customExpress();
 
-conexao.connect((erro) => {
+con.connect((error) => {
 
-   if(erro){
-      console.log(`Ocorreu um erro ao se conectar com o baco de dados: ${erro}`);
+   if(error){
+      console.log(`Ocorreu um erro ao se conectar com o baco de dados: ${error}`);
    }else{
       // Inicializa as tabelas
-      Migrations.init(conexao);
+      Migrations.init(con);
       // Inicia o servidor na porta 3000
       app.listen(3000, () => {
          console.log("Servidor funcionando!");

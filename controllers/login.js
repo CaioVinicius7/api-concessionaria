@@ -1,13 +1,13 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptJs");
-const Autenticacao = require("../models/login");
+const Login = require("../models/login");
 const login = require("../middlewares/autentication/login");
-const { regrasValidacao, validationResult } = require("../middlewares/validations/login");
+const { validationRules, validationResult } = require("../middlewares/validations/login");
 
 module.exports = (app) => {
 
 
-   app.post("/login", regrasValidacao, (req, res) => {
+   app.post("/login", validationRules, (req, res) => {
 
       // Guarda os erros de validação
       const validationErros = validationResult(req);
@@ -18,11 +18,11 @@ module.exports = (app) => {
       }
 
       const dadosLogin = req.body;
-      Autenticacao.login(dadosLogin, res);
+      Login.login(dadosLogin, res);
    });
 
    app.delete("/logout", login, (req, res) => {
-      Autenticacao.logout(req, res);
+      Login.logout(req, res);
    });
 
 }

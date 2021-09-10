@@ -15,14 +15,14 @@ const storage = multer.diskStorage({
 const filter = (req, file, cb) => {
 
    // Extensões permitidas para o arquivo em mimetype
-   const extensoesPermitidas = ["image/png", "image/jpg", "image/jpeg"];
+   const extensions = ["image/png", "image/jpg", "image/jpeg"];
 
    // Se a extensão for alguma extensão permitida ele retorna o mimetype salvo no array
-   const extensaoPermitida = extensoesPermitidas.find((extensaoAceita) => {
-      return extensaoAceita === file.mimetype;
+   const extension = extensions.find((extension) => {
+      return extension === file.mimetype;
    });
 
-   if(extensaoPermitida){
+   if(extensions){
       return cb(null, true);
    }
    
