@@ -17,7 +17,7 @@ class Vehicles{
          }
 
          if(result < 1){
-            return res.status(204).send();
+            return res.status(204).json();
          }
 
          // Formata a data do registro
@@ -48,8 +48,7 @@ class Vehicles{
          }
 
          if(result.length < 1){
-            return res.status(204).send();
-            
+            return res.status(204).json();
          }
 
          // Percorre todos os registros retornados e formata a data 
@@ -81,7 +80,7 @@ class Vehicles{
          }
 
          if(result.length < 1){
-            return res.status(204).send();
+            return res.status(204).json();
          }
          
          // Percorre todos os registros retornados e formata a data 

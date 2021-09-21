@@ -29,7 +29,7 @@ class Tables{
    // Tabela de usuários
    usersTable(){
       
-      const sql = "CREATE TABLE IF NOT EXISTS users (idUser int NOT NULL AUTO_INCREMENT, fullName varchar(100) NOT NULL, email varchar(80) NOT NULL UNIQUE, password varchar(60) NOT NULL, registerDate datetime NOT NULL, lastLogin dateTime NOT NULL, PRIMARY KEY(idUser))";
+      const sql = "CREATE TABLE IF NOT EXISTS users (idUser int NOT NULL AUTO_INCREMENT, fullName varchar(100) NOT NULL, email varchar(80) NOT NULL UNIQUE, password varchar(60) NOT NULL, registerDate datetime NOT NULL, lastLogin dateTime NOT NULL, verifiedEmail varchar(3) NOT NULL, PRIMARY KEY(idUser))";
 
       this.con.query(sql, (error) => {
 

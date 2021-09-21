@@ -16,6 +16,12 @@ const validationRules = [
          return Promise.reject("O campo data de registro não pode existir");
       }
       return true;
+   }),
+   body("verifiedEmail").custom((value) => {
+      if(value || value === null || value === ""){
+         return Promise.reject("O campo email verificado não pode existir");
+      }
+      return true;
    })
 ];
 
@@ -32,6 +38,12 @@ const validationRulesEdit = [
    body("lastLogin").custom((value) => {
       if(value || value === null || value === ""){
          return Promise.reject("O campo data de registro não pode existir");
+      }
+      return true;
+   }),
+   body("verifiedEmail").custom((value) => {
+      if(value || value === null || value === ""){
+         return Promise.reject("O campo email verificado não pode existir");
       }
       return true;
    })

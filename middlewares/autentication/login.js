@@ -1,24 +1,39 @@
-const { verify } = require("jsonwebtoken");
+const { verify, TokenExpiredError } = require("jsonwebtoken");
+const blacklist = require("../../redis/blacklist");
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
 
    try{
 
       // Salva o token
       const token = req.headers.authorization.split(" ")[1];
-   
+      
       if(!token){
          return res.status(401).json({ erro: "token inexistente" });
+      }
+      
+      // Verifica se o token está na blacklist
+      const tokenInBlacklist = await blacklist.containsToken(token);
+
+      if(tokenInBlacklist){
+         return res.status(401).json({ erro: "token invalído por logout" });
       }
       
       // Verifica se o token existe
       const decode = verify(token, process.env.JWT_KEY);
       req.user = decode; 
-      
+
       return next(); 
 
    }catch(error){
-      return res.status(401).json({ error: "token inválido" });
+
+      if(error.name === "TokenExpiredError"){
+         return res.status(401).json({ erro: "token expirado" });
+      }
+
+      // console.log(error)
+
+      return res.status(401).json({ erro: "token inválido" });
    }
 
 }

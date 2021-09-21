@@ -1,7 +1,9 @@
+require("dotenv/config");
 const con = require("./connection");
 const moment = require("moment");
 const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
+const { VerificationEmail } = require("./email"); 
+const { sign, verify} = require("jsonwebtoken");
 
 class Users{
 
@@ -17,7 +19,7 @@ class Users{
          }
 
          if(!result[0]){
-            return res.status(204).send();
+            return res.status(204).json();
          }
 
          // Formata a data e horário de criação e ultimo login
@@ -32,9 +34,9 @@ class Users{
    }
 
    // Lista todos os usuários ou usuários pelo nome (filtro opcional)
-   listUsers(name, res){
+   listUsers(user, res){
 
-      const sql = (name) ? `SELECT idUser, fullName, email, registerDate, lastLogin FROM users WHERE fullName like '${name}%'` : `SELECT * FROM users`;
+      const sql = (user) ? `SELECT * FROM users WHERE fullName like '${user}%'` : `SELECT * FROM users`;
 
       con.query(sql, (error, result) => {
 
@@ -43,7 +45,7 @@ class Users{
          }
 
          if(result.length < 1){
-            res.status(204).send();
+            return res.status(204).send();
          }
 
          const users = result.map((user) => {
@@ -85,48 +87,36 @@ class Users{
          // Criptografa a senha
          const encryptedPassword = await bcrypt.hash(data.password, 12);
 
-         const formattedData = { ...data, password: encryptedPassword, registerDate: regDate, lastLogin: "0000-00-00 00:00:00" };
+         const formattedData = { ...data, password: encryptedPassword, registerDate: regDate, lastLogin: "0000-00-00 00:00:00", verifiedEmail: "no" };
          
          const sql = "INSERT INTO users SET ?";
    
-         con.query(sql, formattedData, async (error, result) => {
+         con.query(sql, formattedData, (error, result) => {
    
             if(error){
                return res.status(400).json(error);
             }
 
-            // Envio de email
-            try{
-      
-               const user = process.env.USER_EMAIL;
-               const pass = process.env.PASS_EMAIL;
-               const smtp = process.env.SMTP_EMAIL;
-               const port = process.env.PORT_EMAIL;
-               
-               // Cria o transportador com as credenciais
-               const transporter = nodemailer.createTransport({
-                  host: smtp,
-                  port: port,
-                  secure: false,
-                  auth: {
-                     user,
-                     pass
-                  }
+            const sqlEmail = "SELECT * FROM users WHERE email = ?";
+
+            con.query(sqlEmail, formattedData.email, (error, result) => {
+
+               if(error){
+                  return res.status(400).json(error);
+               }
+
+               const verificationToken = sign({
+                  idUser: result[0].idUser,
+               }, process.env.JWT_KEY, {
+                  expiresIn: "24h"
                });
-      
-               await transporter.sendMail({
-                  from: `Caio Vinícius" '${process.env.USER_EMAIL}'`,
-                  to: data.email,
-                  replyTo: process.env.USER_EMAIL,
-                  subject: "Bem vindo ao nosso sistema!",
-                  text: `Olá ${formattedData.fullName.split(" ")[0]}, sua conta em nosso sistema acabou de ser criada! desejamos nossas boas vindas.`,
-                  html: `<p> Olá ${formattedData.fullName.split(" ")[0]}, sua conta em nosso sistema acabou de ser criada! desejamos nossas boas vindas. </p>`
-               });
-      
-            }catch(error){
-               return res.status(400).json(error);
-            }
-            
+
+               const url = process.env.BASE_URL + verificationToken;
+               const verificationEmail = new VerificationEmail(formattedData, url);
+               verificationEmail.sendEmail().catch(console.log);
+
+            });
+
             res.status(200).json({
                status: "registro concluido",
                dadosUsuario: { 
@@ -233,6 +223,43 @@ class Users{
          });
 
       });
+
+   }
+
+   verifyEmail(token, res){
+
+      try{
+
+         const decode = verify(token, process.env.JWT_KEY);
+         const { idUser: id } = decode;
+   
+         const sql = "UPDATE users SET verifiedEmail = ? WHERE idUser = ?";
+   
+         con.query(sql, ["yes", id], (error, result) => {
+   
+            if(error){
+               return res.status(400).json(error);
+            }
+   
+            res.status(200).json({ status: "e-mail verificado com sucesso" });
+
+         });
+
+      }catch(error){
+
+         if(error.name === "TokenExpiredError"){
+            return res.status(401).json(error);
+         }
+         
+         if(error.name === "JsonWebTokenError"){
+            return res.status(401).json(error);
+         }
+
+         res.status(500).json({ erro: error.message });
+
+      }
+
+
 
    }
 

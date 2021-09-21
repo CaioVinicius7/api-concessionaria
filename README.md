@@ -90,7 +90,6 @@ As seguintes ferramentas foram usadas na construção do projeto:
 - [express](https://expressjs.com/pt-br/)
 - [moment.js](https://momentjs.com/)
 - [consign](https://github.com/jarradseers/consign)
-- [body-parser](https://github.com/expressjs/body-parser)
 - [express-validator](https://express-validator.github.io/docs/)
 - [multer](https://github.com/expressjs/multer)
 - [mysql](https://github.com/mysqljs/mysql)
@@ -98,7 +97,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 - [bcrypt](https://github.com/kelektiv/node.bcrypt.js)
 - [dotenv](https://github.com/motdotla/dotenv)
 - [nodemailer](https://nodemailer.com/about/)
-
+- [redis](https://www.npmjs.com/package/redis)
 
 ### Autor
 ---
