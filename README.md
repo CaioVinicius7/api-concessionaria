@@ -107,7 +107,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 ---
 
 <a href="https://www.facebook.com/caio.pereira.94695">
- <img style="border-radius: 50%;" src="https://scontent.fguj3-1.fna.fbcdn.net/v/t1.6435-9/142052074_3709793379112018_4012923653098423199_n.jpg?_nc_cat=105&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=M6BAMRIcOXMAX82huD8&_nc_ht=scontent.fguj3-1.fna&oh=0320f7a4e1ed79a4938fce6918fcf9f3&oe=61421F3E" width="100px;" alt=""/>
+ <img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/62827681?s=400&u=f0b18831e6690a901f956d637933b9ee2dca3104&v=4" width="100px;" alt=""/>
  <br />
  <h2><b>Caio Vinícius</b></h2></a>
 
