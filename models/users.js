@@ -1,249 +1,231 @@
 require("dotenv/config");
-const con = require("./connection");
 const moment = require("moment");
 const bcrypt = require("bcryptjs");
 const { VerificationEmail } = require("./email"); 
 const { sign, verify} = require("jsonwebtoken");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 class Users{
 
    // Lista um usuário específico
-   listUser(id, res){
+   async listUser(id, res){
 
-      const sql = "SELECT * FROM users WHERE idUser = ?";
-      
-      con.query(sql, id, (error, result) => {
+      try{
 
-         if(error){
-            return res.status(400).json(error);
-         }
-
-         if(!result[0]){
+         const result = await prisma.users.findUnique({
+            where: {
+               id: Number(id)
+            }
+         });
+   
+         if(!result){
             return res.status(204).json();
          }
-
+   
          // Formata a data e horário de criação e ultimo login
-         const dateRegFormatted = moment(result[0].registerDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-         const lastLoginFormatted =  moment(result[0].lastLogin, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-         const formattedUser = { ...result[0], registerDate: dateRegFormatted, lastLogin: lastLoginFormatted };
+         const lastLoginFormatted =  (result.lastLogin != null) ? moment(result.lastLogin, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss") : null;
+         const createAtFormatted = moment(result.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+         const updatedAtFormatted = moment(result.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+         const user = {
+            ...result,
+            lastLogin: lastLoginFormatted,
+            createdAt: createAtFormatted,
+            updatedAt: updatedAtFormatted
+         };
+   
+         return res.status(200).json(user);
 
-         res.status(200).json(formattedUser);
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
 
-      });
 
    }
 
    // Lista todos os usuários ou usuários pelo nome (filtro opcional)
-   listUsers(user, res){
+   async listUsers(user, res){
 
-      const sql = (user) ? `SELECT * FROM users WHERE fullName like '${user}%'` : `SELECT * FROM users`;
+      try{
 
-      con.query(sql, (error, result) => {
-
-         if(error){
-            return res.status(400).json(error);
-         }
-
+         const result = await prisma.users.findMany({
+            where: {
+               fullName: {
+                  startsWith: user
+               }
+            }
+         });
+   
+   
          if(result.length < 1){
             return res.status(204).send();
          }
-
+   
          const users = result.map((user) => {
-
+   
             // Formata a data e horário de criação e ultimo login
-            const dateRegFormatted = moment(user.registerDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-            const lastLoginFormatted =  (user.lastLogin != "Invalid Date") ? moment(user.lastLogin, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss") : "";
-            const formattedUser = { ...user, registerDate: dateRegFormatted, lastLogin: lastLoginFormatted };
-
+            const lastLoginFormatted =  (user.lastLogin != null) ? moment(user.lastLogin, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss") : null;
+            const createAtFormatted = moment(user.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+            const updatedAtFormatted = moment(user.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+            const formattedUser = {
+               ...user,
+               lastLogin: lastLoginFormatted,
+               createdAt: createAtFormatted,
+               updatedAt: updatedAtFormatted 
+            };
+   
             return formattedUser;
             
          });
 
-         res.status(200).json(users);
+         return res.status(200).json(users);
+
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
+
          
-      });
 
    }
 
    // Adiciona um novo usuário
-   addUser(data, res){
+   async addUser(data, res){
 
-      // Verifica se o email já não está registrado
-      const sqlVerifyEmail = `SELECT email FROM users WHERE email = ?`;
 
-      con.query(sqlVerifyEmail, data.email, async (error, result) => {
-         
-         if(error){
-            return res.status(400).json(error);
+      try{
+
+         const verifyEmail = await  await prisma.users.findUnique({
+            where: {
+               email: data.email
+            }
+         });
+
+         if(verifyEmail){
+            return res.status(400).json({ erro: "e-mail já registrado" });
          }
-
-         if(result.length >= 1){
-               return res.status(400).json({ erro: "e-mail já registrado" });
-         }
-
-         // Recebe a data e horario do registro
-         const regDate = moment().format("YYYY-MM-DD HH:mm:ss");
    
          // Criptografa a senha
          const encryptedPassword = await bcrypt.hash(data.password, 12);
-
-         const formattedData = { ...data, password: encryptedPassword, registerDate: regDate, lastLogin: "0000-00-00 00:00:00", verifiedEmail: "no" };
-         
-         const sql = "INSERT INTO users SET ?";
    
-         con.query(sql, formattedData, (error, result) => {
+         // Salva os dados formatados 
+         const formattedData = { ...data, password: encryptedPassword, lastLogin: null, verifiedEmail: "no" };
    
-            if(error){
-               return res.status(400).json(error);
-            }
-
-            const sqlEmail = "SELECT * FROM users WHERE email = ?";
-
-            con.query(sqlEmail, formattedData.email, (error, result) => {
-
-               if(error){
-                  return res.status(400).json(error);
-               }
-
-               const verificationToken = sign({
-                  idUser: result[0].idUser,
-               }, process.env.JWT_KEY, {
-                  expiresIn: "24h"
-               });
-
-               const url = process.env.BASE_URL + verificationToken;
-               const verificationEmail = new VerificationEmail(formattedData, url);
-               verificationEmail.sendEmail().catch(console.log);
-
-            });
-
-            res.status(200).json({
-               status: "registro concluido",
-               dadosUsuario: { 
-                  usuario: formattedData.fullName, email: formattedData.email
-               }
-            });
-   
+         const result = await prisma.users.create({
+            data: formattedData
          });
 
-      });
+         const verificationToken = sign({
+            id: result.id,
+         }, process.env.JWT_KEY, {
+            expiresIn: "72h"
+         });
+   
+         const url = process.env.BASE_URL + verificationToken;
+         const verificationEmail = new VerificationEmail(formattedData, url);
+         verificationEmail.sendEmail().catch(console.log);
 
+         return res.status(200).json({
+            status: "registro concluido",
+            dados: { 
+               usuario: result.fullName,
+               email: result.email
+            }
+         });
 
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
 
    }
 
    // Edita os dados de um usuários
-   editUser(id, data, res){
+   async editUser(id, data, res){
 
-       // Verifica se existe um usuário cadastrado com o email
-       const sqlVerifyEmail = "SELECT email FROM users WHERE email = ?";
-      
-       con.query(sqlVerifyEmail, data.email, (error, result) => {
+      try{
 
-          if(error){
-             return res.status(400).json(error);
-          }
-
-          if(result.length >= 1){
-             return res.status(400).json({ erro: "já existe um usuário cadastrado com esse email" });
-          }
-      
-         // Verifica se existe um usuário com esse id
-         const sqlVerify = "SELECT idUser, registerDate, lastLogin FROM users WHERE idUser = ?";
-      
-         con.query(sqlVerify, id, async (error, result) => {
-
-            if(error){
-               return res.status(400).json(error);
+         const verify = await prisma.users.findUnique({
+            where: {
+               id: Number(id)
             }
-
-            if(result.length < 1){
-               return res.status(400).json({ erro: "nenhum usuário encontrado com esse id" });
-            }
-   
-            // Formata a senha e a data do ultimoLogin caso o usuário ainda não tenha logado
-            const encryptedPassword = await bcrypt.hash(data.password, 12);
-            const regDate = result[0].registerDate;
-            const lastLogin = (!moment(result[0].lastLogin).isValid()) ? "0000-00-00 00:00:00" : result[0].lastLogin;
-   
-            const formattedData = { ...data, password: encryptedPassword, registerDate: regDate, lastLogin: lastLogin };
-   
-            const sql = "UPDATE users SET ? WHERE idUser = ?";
-            
-            con.query(sql, [formattedData, id], (error, result) => {
-               
-               if(error){
-                  return res.status(400).json(error);
-               }
-   
-               res.status(200).json({ 
-                  status: "Usuário editado com sucesso",
-                  id: id
-               });
-               
-               
-            });
-   
-   
          });
 
-      });
+         if(!verify){
+            return res.status(400).json({ erro: "nenhum usuário registrado com esse id" });
+         }
+
+         const result = await prisma.users.update({
+            where: {
+               id: Number(id)
+            },
+            data: data
+         });
+
+         res.status(200).json({ 
+            status: "Usuário editado com sucesso",
+            id: result.id
+         });
+
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
+
 
    }
 
    // Exclui os dados de um usuário
-   deleteUser(id, res){
+   async deleteUser(id, res){
 
-      const sqlVerify = "SELECT idUser FROM users WHERE idUser = ?";
+      try{
 
-      con.query(sqlVerify, id, (error, result) => {
-
-         if(error){
-            return res.status(400).json(error);
-         }
-
-         if(result.length < 1){
-            return res.status(400).json({ erro: "nenhum usuário encontrado com esse id" });
-         }
-
-         const sql = "DELETE FROM users WHERE idUser = ?";
-
-         con.query(sql, id, (error, result) => {
-            
-            if(error){
-               return res.status(400).json(error);
+         const verify = await prisma.users.findUnique({
+            where: {
+               id: Number(id)
             }
-
-            res.status(200).json({ 
-               status: "usuário excluido", 
-               id: id
-            });
-            
-
          });
 
-      });
+         if(!verify){
+            return res.status(400).json({ erro: "nenhum usuário registrado com esse id" });
+         }
+
+         const result = await prisma.users.delete({
+            where: {
+               id: Number(id)
+            }
+         }); 
+
+         res.status(200).json({ 
+            status: "usuário excluido", 
+            dados: {
+               nome: result.fullName,
+               email: result.email
+            }
+         });
+
+
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
 
    }
 
-   verifyEmail(token, res){
+   // Verifica o email de um usuário
+   async verifyEmail(token, res){
 
       try{
 
          const decode = verify(token, process.env.JWT_KEY);
-         const { idUser: id } = decode;
-   
-         const sql = "UPDATE users SET verifiedEmail = ? WHERE idUser = ?";
-   
-         con.query(sql, ["yes", id], (error, result) => {
-   
-            if(error){
-               return res.status(400).json(error);
-            }
-   
-            res.status(200).json({ status: "e-mail verificado com sucesso" });
+         const { id } = decode;
 
+         const result = await prisma.users.update({
+            where: {
+               id: Number(id)
+            },
+            data: {
+               verifiedEmail: "yes"
+            }
          });
+         
+         res.status(200).json({ status: "e-mail verificado com sucesso" });
 
       }catch(error){
 
@@ -258,7 +240,6 @@ class Users{
          res.status(500).json({ erro: error.message });
 
       }
-
 
 
    }

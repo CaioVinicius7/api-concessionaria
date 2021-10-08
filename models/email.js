@@ -10,7 +10,7 @@ class Email{
 
    async sendEmail(){
 
-      console.log(process.env.NODE_ENV)
+      // console.log(process.env.NODE_ENV);
 
       if(process.env.NODE_ENV === "production"){
 
@@ -59,10 +59,10 @@ class VerificationEmail extends Email{
       this.from = `Caio vinícius < ${user} >`;
       this.to = userData.email;
       this.subject = "Bem vindo ao nosso sistema!";
-      this.text = `Olá ${userData.fullName.split(" ")[0]}, sua conta em nosso sistema acabou de ser criada! desejamos nossas boas vindas!, 
-                   Confime seu e-mail aqui: ${url}`;
-      this.html = `<p> Olá ${userData.fullName.split(" ")[0]}, sua conta em nosso sistema acabou de ser criada! desejamos nossas boas vindas. </p>
-                   <p> Confirme seu e-mail aqui: <a href="${url}" > ${url} </a> </p>`; 
+      this.text = `Olá ${userData.fullName.split(" ")[0]}, sua conta acabou de ser criada em nosso sistema! desejamos nossas boas vindas! 
+                   Verifique seu e-mail aqui: ${url}`;
+      this.html = `<p> Olá ${userData.fullName.split(" ")[0]}, sua conta acabou de ser criada em nosso sistema! desejamos nossas boas vindas! </p>
+                   <p> Verifique seu e-mail aqui: <a href="${url}" > ${url} </a> </p>`; 
 
    }
 

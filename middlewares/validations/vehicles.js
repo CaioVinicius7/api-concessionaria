@@ -19,21 +19,26 @@ const validationRules = [
    body("description").isLength({min: 10}).withMessage("O campo descrição precisa ter pelo menos 10 caracteres"),
    body("observation").optional({nullable: true}).isLength({min: 10}).withMessage("O campo observação precisa ter pelo menos 10 caracteres"),
    body("status").custom((value) => {
-      if(value && (value != "à venda" && value != "vendido")){
-         return Promise.reject("O campo status precisa conter o valor à venda ou vendido");
+      if(value || value === null || value === ""){
+         return Promise.reject("O campo status não pode existir");
       }
       return true;
    }),
-   body("sellDate").optional({nullable: true}).isLength({min: 10, max: 10}).withMessage("Preencha o campo data de venda de forma correta"),
+   body("sellDate").custom((value) => {
+      if(value || value === null || value === ""){
+         return Promise.reject("O campo data de venda não pode existir");
+      }
+      return true;
+   }),
    body("registerDate").custom((value) => {
       if(value || value === null || value === ""){
          return Promise.reject("O campo data de registro não pode existir");
       }
       return true;
    }),
-   body("idVehicle").custom((value) => {
+   body("id").custom((value) => {
       if(value || value === null || value === ""){
-         return Promise.reject("O campo data de id não pode existir");
+         return Promise.reject("O campo id não pode existir");
       }
       return true;
    })
@@ -59,25 +64,25 @@ const validationRulesEdit = [
    body("description").optional({nullable: true}).isLength({min: 10}).withMessage("O campo descrição precisa ter pelo menos 10 caracteres"),
    body("observation").optional({nullable: true}).isLength({min: 10}).withMessage("O campo observação precisa ter pelo menos 10 caracteres"),
    body("status").optional({nullable: true}).isLength({min: 5}).withMessage("O campo status precisa ter pelo menos 5 caracteres"),
-   body("sellDate").optional({nullable: true}).isLength({min: 10, max: 10}).withMessage("Preencha o campo data de venda de forma correta"),
+   body("sellDate").custom((value) => {
+      if(value || value === null || value === ""){
+         return Promise.reject("O campo data de venda não pode existir");
+      }
+      return true;
+   }),
    body("registerDate").custom((value) => {
       if(value || value === null || value === ""){
          return Promise.reject("O campo data de registro não pode existir");
       }
       return true;
    }),
-   body("idVehicle").custom((value) => {
+   body("id").custom((value) => {
       if(value || value === null || value === ""){
-         return Promise.reject("O campo data de id não pode existir");
+         return Promise.reject("O campo id não pode existir");
       }
       return true;
    })
 
 ];
 
-// Regras de validação da venda
-const validationRulesSale = [
-   body("sellDate").optional({nullable: true}).isLength({min: 10, max: 10}).withMessage("Preencha o campo data de venda de forma correta")
-];
-
-module.exports = { validationRules, validationRulesEdit, validationRulesSale, validationResult };
+module.exports = { validationRules, validationRulesEdit, validationResult };

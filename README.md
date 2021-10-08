@@ -80,6 +80,12 @@ $ cd api-concessionaria
 # Instale as dependências
 $ npm install
 
+# Rode as migrations
+$ npx prisma migrate deploy
+
+# Rode as seeds
+$ npx prisma db seed
+
 # Execute a aplicação
 $ npm start
 
@@ -96,12 +102,12 @@ As seguintes ferramentas foram usadas na construção do projeto:
 - [consign](https://github.com/jarradseers/consign)
 - [express-validator](https://express-validator.github.io/docs/)
 - [multer](https://github.com/expressjs/multer)
-- [mysql](https://github.com/mysqljs/mysql)
 - [jwt](https://github.com/auth0/node-jsonwebtoken#reademe)
 - [bcrypt](https://github.com/kelektiv/node.bcrypt.js)
 - [dotenv](https://github.com/motdotla/dotenv)
 - [nodemailer](https://nodemailer.com/about/)
 - [redis](https://www.npmjs.com/package/redis)
+- [prisma](https://www.prisma.io/)
 
 ### Autor
 ---

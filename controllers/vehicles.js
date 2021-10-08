@@ -53,19 +53,9 @@ module.exports = (app) => {
    });
 
    // Define o status de um veículo como vendido
-   app.patch("/sellVehicle/:id", login, validationRulesSale, async (req, res) => {
-
+   app.patch("/sellVehicle/:id", login, async (req, res) => {
       const id = req.params.id;
-      const sellDate = req.body.dataVenda;
-
-      // Guarda os erros de validação
-      const validationErros = validationResult(req);
-      
-      if(!validationErros.isEmpty()){
-         return res.status(400).json({ errors: validationErros.array() });
-      }
-
-      await Vehicles.sellVehicle(id, sellDate, res);      
+      await Vehicles.sellVehicle(id, res);      
    });
 
    // Edita um veiculo

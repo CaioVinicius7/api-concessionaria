@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Users {
+  id Int @default(autoincrement()) @id
+  fullName String @db.VarChar(100)
+  email String @db.VarChar(80) @unique
+  password String @db.VarChar(60)
+  lastLogin DateTime? @db.DateTime()
+  verifiedEmail String @db.VarChar(3) 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model vehicles {
+  id Int @default(autoincrement()) @id
+  type String @db.VarChar(35) 
+  model String @db.VarChar(80)
+  manufacturer String @db.VarChar(50)
+  year Int 
+  price Float @db.Float
+  listPrice Float @db.Float
+  procedence String @db.VarChar(30) 
+  size String @db.VarChar(15) 
+  places Int 
+  ports Int? 
+  exchange String @db.VarChar(20)
+  marches Int 
+  urbanConsume Float @db.Float
+  roadConsume Float @db.Float
+  description String @db.Text
+  observation String? @db.Text 
+  status String @db.VarChar(10)
+  sellDate DateTime? @db.Date
+  img String @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
