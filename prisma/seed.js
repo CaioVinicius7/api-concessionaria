@@ -9,7 +9,7 @@ async function main(){
          {
             fullName: "caio vinícius",
             email: "caio@gmail.com",
-            password: await await hash("teste123", 12),
+            password: await hash("teste123", 12),
             lastLogin: null,
             verifiedEmail: "yes",
             createdAt: new Date(),
@@ -18,7 +18,7 @@ async function main(){
          {
             fullName: "niel cintra",
             email: "niel@gmail.com",
-            password: await await hash("teste123", 12),
+            password: await hash("teste123", 12),
             lastLogin: null,
             verifiedEmail: "yes",
             createdAt: new Date(),
@@ -27,7 +27,7 @@ async function main(){
          {
             fullName: "joão vitor",
             email: "joao@gmail.com",
-            password: await await hash("teste123", 12),
+            password: await hash("teste123", 12),
             lastLogin: null,
             verifiedEmail: "yes",
             createdAt: new Date(),
@@ -37,7 +37,7 @@ async function main(){
          {
             fullName: "feliphe sene",
             email: "fepliphe@gmail.com",
-            password: await await hash("teste123", 12),
+            password: await hash("teste123", 12),
             lastLogin: null,
             verifiedEmail: "yes",
             createdAt: new Date(),
@@ -66,7 +66,6 @@ async function main(){
             description: "carro esportivo",
             observation: null,
             status: "à venda",
-            sellDate: null,
             img: "uploads\\camaro.jpg",
             createdAt: new Date(),
             updatedAt: new Date()
@@ -89,7 +88,6 @@ async function main(){
             description: "carro clásico",
             observation: "bancos reformados",
             status: "vendido",
-            sellDate: new Date(),
             img: "uploads\\opala.jpg",
             createdAt: new Date(),
             updatedAt: new Date()
@@ -112,12 +110,47 @@ async function main(){
             description: "moto esportiva",
             observation: "moto robusta e muito veloz",
             status: "à venda",
-            sellDate: null,
             img: "uploads\\mt09.jpg",
             createdAt: new Date(),
             updatedAt: new Date()
          },
       ] 
+   });
+
+   await prisma.clients.createMany({
+      data: [
+         {
+            fullName: "ellen bessa",
+            email: "ellen@gmail.com",
+            phone: "(12) 94002-8922",
+            cpf: "179.918.780-23",
+            adress: "São Francisco, 247",
+            createdAt: new Date(),
+            updatedAt: new Date()
+         },
+         {
+            fullName: "jonas braga",
+            email: "jonas@gmail.com",
+            phone: "(35) 94000-5377",
+            cpf: "223.450.130-01",
+            adress: "Bela Vista, 612",
+            createdAt: new Date(),
+            updatedAt: new Date()
+         }
+      ]
+   });
+
+   await prisma.sales.createMany({
+      data: [
+         {
+            sellDate: new Date(),
+            sellValue: 36.250,
+            idClient: 1,
+            idVehicle: 2,
+            createdAt: new Date(),
+            updatedAt: new Date() 
+         } 
+      ]
    });
 
 }

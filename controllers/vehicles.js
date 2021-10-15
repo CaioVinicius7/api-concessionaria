@@ -1,5 +1,5 @@
 const Vehicles = require("../models/Vehicles");
-const { validationRules, validationRulesEdit, validationResult, validationRulesSale } = require("../middlewares/validations/Vehicles");
+const { validationRules, validationRulesEdit, validationRulesSell, validationResult, validationRulesSale } = require("../middlewares/validations/Vehicles");
 const { upload } = require("../middlewares/uploads/uploadImage");
 const login = require("../middlewares/autentication/login");
 const fs = require("fs");
@@ -8,7 +8,8 @@ module.exports = (app) => {
 
    // Lista todos os veiculos registrados
    app.get("/listVehicles/:status?", async (req, res) => {
-      await Vehicles.listVehicles(req, res);
+      const { status } = req.params;
+      await Vehicles.listVehicles(status, res);
    });
 
    // Lista todos os veiculos por tipo 
@@ -50,12 +51,6 @@ module.exports = (app) => {
       const data = { ...req.body, img: imgPath };
       
       await Vehicles.addVehicle(data, res);
-   });
-
-   // Define o status de um veículo como vendido
-   app.patch("/sellVehicle/:id", login, async (req, res) => {
-      const id = req.params.id;
-      await Vehicles.sellVehicle(id, res);      
    });
 
    // Edita um veiculo
