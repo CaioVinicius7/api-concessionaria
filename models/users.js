@@ -57,7 +57,7 @@ class Users{
          });
    
    
-         if(result.length < 1){
+         if(!result.length){
             return res.status(204).send();
          }
    
@@ -94,7 +94,7 @@ class Users{
 
       try{
 
-         const verifyEmail = await  await prisma.users.findUnique({
+         const verifyEmail = await prisma.users.findUnique({
             where: {
                email: data.email
             }
@@ -124,7 +124,7 @@ class Users{
          const verificationEmail = new VerificationEmail(formattedData, url);
          verificationEmail.sendEmail().catch(console.log);
 
-         return res.status(200).json({
+         return res.status(201).json({
             status: "registro concluido",
             dados: { 
                usuario: result.fullName,

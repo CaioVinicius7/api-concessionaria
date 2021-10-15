@@ -21,7 +21,7 @@ model Users {
   updatedAt DateTime @updatedAt
 }
 
-model vehicles {
+model Vehicles {
   id Int @default(autoincrement()) @id
   type String @db.VarChar(35) 
   model String @db.VarChar(80)
@@ -40,8 +40,32 @@ model vehicles {
   description String @db.Text
   observation String? @db.Text 
   status String @db.VarChar(10)
-  sellDate DateTime? @db.Date
   img String @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sales Sales?
+}
+
+model Clients{
+  id Int @default(autoincrement()) @id
+  fullName String @db.VarChar(100)
+  email String @db.VarChar(80) @unique
+  phone String @db.VarChar(15) @unique
+  cpf String @db.VarChar(14) @unique
+  adress String @db.VarChar(150)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sales Sales[]
+}
+
+model Sales{
+  id Int @default(autoincrement()) @id
+  sellDate DateTime @default(now())
+  sellValue Float @db.Float
+  clients Clients @relation(fields: [idClient], references: id)
+  idClient Int
+  vehicles Vehicles @relation(fields: [idVehicle], references: id)
+  idVehicle Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

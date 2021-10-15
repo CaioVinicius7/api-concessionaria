@@ -24,18 +24,6 @@ const validationRules = [
       }
       return true;
    }),
-   body("sellDate").custom((value) => {
-      if(value || value === null || value === ""){
-         return Promise.reject("O campo data de venda não pode existir");
-      }
-      return true;
-   }),
-   body("registerDate").custom((value) => {
-      if(value || value === null || value === ""){
-         return Promise.reject("O campo data de registro não pode existir");
-      }
-      return true;
-   }),
    body("id").custom((value) => {
       if(value || value === null || value === ""){
          return Promise.reject("O campo id não pode existir");
@@ -63,16 +51,9 @@ const validationRulesEdit = [
    body("roadConsume").optional({nullable: true}).isNumeric().withMessage("O campo consumo rodoviario precisa ser númerico"),
    body("description").optional({nullable: true}).isLength({min: 10}).withMessage("O campo descrição precisa ter pelo menos 10 caracteres"),
    body("observation").optional({nullable: true}).isLength({min: 10}).withMessage("O campo observação precisa ter pelo menos 10 caracteres"),
-   body("status").optional({nullable: true}).isLength({min: 5}).withMessage("O campo status precisa ter pelo menos 5 caracteres"),
-   body("sellDate").custom((value) => {
+   body("status").custom((value) => {
       if(value || value === null || value === ""){
-         return Promise.reject("O campo data de venda não pode existir");
-      }
-      return true;
-   }),
-   body("registerDate").custom((value) => {
-      if(value || value === null || value === ""){
-         return Promise.reject("O campo data de registro não pode existir");
+         return Promise.reject("O campo status não pode existir");
       }
       return true;
    }),
