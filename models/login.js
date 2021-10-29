@@ -10,129 +10,108 @@ const prisma = new PrismaClient();
 
 class Login{
 
-   async login(data, res){
+   async login(data){
 
-      try{
-
-         const result = await prisma.users.findUnique({
-            where: {
-               email: data.email
-            }
-         });
-
-         if(!result){
-            return res.status(400).json({ erro: "e-mail ou senha incorretos" });
+      const result = await prisma.users.findUnique({
+         where: {
+            email: data.email
          }
+      });
 
-         // COmpara a senha
-         bcrypt.compare(data.password, result.password, async (error, resultCompare) => {
-            
-            if(error){
-               return res.status(401).json({ erro: "e-mail ou senha incorretos" });
-            }
-
-            if(resultCompare){
-
-               await prisma.users.update({
-                  where: {
-                     id: result.id
-                  },
-                  data: {
-                     lastLogin: new Date()
-                  }
-               });
-
-               // Cria o refresh token
-               const refreshToken = crypto.randomBytes(24).toString("hex");
-               // Define a data de expiração para daqui 5 dias e tranforma em unix timestamp
-               const expireDateRefreshToken = moment().add(5, "d").unix();
-               await whitelist.addToken(refreshToken, result.id, expireDateRefreshToken);
-
-               // Cria o token
-               const token = jwt.sign({
-                  id: result.id,
-                  fullName: result.fullName,
-                  email: result.email 
-               }, process.env.JWT_KEY, {
-                  expiresIn: "1h"
-               });
-
-               return res.set("Authorization", token),
-                      res.status(200).json({ 
-                        status: "autenticado com sucesso!",
-                        refreshToken: refreshToken
-                      });
-
-            }
-
-            return res.status(401).json({ erro: "e-mail ou senha incorretos" });
-
-         });
-
-      }catch(error){
-         return res.status(500).json(error.message);
+      if(!result){
+         return null;
       }
+
+      // Compara a senha
+      const compareResult = await bcrypt.compare(data.password, result.password);
+
+      if(!compareResult){
+         return null;
+      }
+      
+      // Atualiza a data do ultimo login
+      await prisma.users.update({
+         where: {
+            id: result.id
+         },
+         data: {
+            lastLogin: new Date()
+         }
+      });
+
+      // Cria o refresh token
+      const refreshToken = crypto.randomBytes(24).toString("hex");
+      // Define a data de expiração para daqui 5 dias e tranforma em unix timestamp
+      const expireDateRefreshToken = moment().add(5, "d").unix();
+      await whitelist.addToken(refreshToken, result.id, expireDateRefreshToken);
+
+      // Cria o token
+      const token = jwt.sign({
+         id: result.id,
+         fullName: result.fullName,
+         email: result.email 
+      }, process.env.JWT_KEY, {
+         expiresIn: "1h"
+      });
+
+      return {
+         header: {
+            authorization: token
+         },
+         body: {
+            status: "autenticado com sucesso!",
+            refreshToken: refreshToken
+         }
+      }; 
 
    }
 
-   async refresh(req, res){
+   async refresh(user, token){
 
-      const { id } = req.user;
+      const { id } = user;
 
-      try{
+      const { fullName, email } = await prisma.users.findUnique({
+         where: {
+            id: id
+         }
+      });
 
-         const result = await prisma.users.findUnique({
-            where: {
-               id: id
-            }
-         });
+      // Cria o refresh token
+      const refreshToken = crypto.randomBytes(24).toString("hex");
+      // Define a data de expiração para daqui 5 dias e tranforma em unix timestamp
+      const expireDateRefreshToken = moment().add(5, "d").unix();
+      await whitelist.addToken(refreshToken, id, expireDateRefreshToken);
+      await blacklist.addToken(token);
 
-         // Cria o refresh token
-         const refreshToken = crypto.randomBytes(24).toString("hex");
-         // Define a data de expiração para daqui 5 dias e tranforma em unix timestamp
-         const expireDateRefreshToken = moment().add(5, "d").unix();
-         await whitelist.addToken(refreshToken, result.id, expireDateRefreshToken);
+      // Cria o token
+      const newToken = jwt.sign({
+         id: id,
+         fullName: fullName,
+         email: email 
+      }, process.env.JWT_KEY, {
+         expiresIn: "1h"
+      });
 
-         // Cria o token
-         const token = jwt.sign({
-            id: result.id,
-            fullName: result.fullName,
-            email: result.email 
-         }, process.env.JWT_KEY, {
-            expiresIn: "1h"
-         });
-
-         return res.set("Authorization", token),
-                res.status(200).json({ 
-                  status: "autenticado com sucesso!",
-                  refreshToken: refreshToken
-                });
+      return {
+         header: {
+            authorization: newToken
+         },
+         body: {
+            status: "autenticado com sucesso!",
+            refreshToken: refreshToken
+         }
+      };
          
-      }catch(error){
-         return res.status(500).json(error.message);
-      }
-
    }
 
-   async logout(req, res){
+   async logout(token){
 
-      try{
+      // Adiciona o token a blacklist
+      await blacklist.addToken(token);
 
-         // Adiciona o token a blacklist
-         const token = req.headers.authorization.split(" ")[1];
-         await blacklist.addToken(token);
-
-         return res.status(200).json({ status: "desconectado com sucesso" });
-
-      }catch(error){
-
-         return res.status(500).json({
-            status: "ocorreu um erro ao se desconectar do sistema",
-            erro: error
-         });
-
-      }
-
+      return { 
+         status: "desconectado com sucesso"
+      };
 
    }
 

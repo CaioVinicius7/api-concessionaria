@@ -5,13 +5,39 @@ const { validationRules, validationRulesEdit, validationResult } = require("../m
 module.exports = (app) => {
 
    app.get("/listUser/:id", login, async (req, res) => {
+
       const { id } = req.params;
-      await Users.listUser(id, res);
+
+      try{
+         const response = await Users.listUser(id);
+
+         if(!response){
+            return res.status(204).send();
+         }
+
+         return res.status(200).json(response);
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
+
    });
 
    app.get("/listUsers/:user?", login, async (req, res) => {
+
       const { user } = req.params;
-      await Users.listUsers(user, res);
+
+      try{
+         const response = await Users.listUsers(user);
+
+         if(!response){
+            return res.status(204).send();
+         }
+
+         return res.status(200).json(response);
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
+
    });
 
    app.post("/addUser", login, validationRules, async (req, res) => {
@@ -25,7 +51,19 @@ module.exports = (app) => {
       }
 
       const { body: data } = req;
-      await Users.addUser(data, res);
+
+      try{
+         const response = await Users.addUser(data);
+
+         if(response.erro){
+            return res.status(400).json(response);
+         }
+
+         return res.status(201).json(response);
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
+
    });
 
    app.patch("/editUser/:id", login, validationRulesEdit, async (req, res) => {
@@ -39,18 +77,64 @@ module.exports = (app) => {
       }
       
       const { id } = req.params;
+
       const { body: data } = req;
-      await Users.editUser(id, data, res);
+
+      try{
+         const response = await Users.editUser(id, data);
+
+         if(response.erro){
+            return res.status(400).json(response);
+         }
+
+         return res.status(200).json(response);
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
+
    });
 
    app.delete("/deleteUser/:id", login, async (req, res) => {
+
       const { id } = req.params;
-      await Users.deleteUser(id, res);
+
+      try{
+         const response = await Users.deleteUser(id, res);
+
+         if(response.erro){
+            return res.status(400).json(response);
+         }
+
+         return res.status(200).json(response);
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
+
    });
 
    app.get("/verifyEmail/:token", async (req, res) => {
+
       const { token } = req.params;
-      await Users.verifyEmail(token, res); 
+
+      try{
+
+         const response = await Users.verifyEmail(token);
+         return res.status(200).json(response);
+
+      }catch(error){
+
+         if(error.name === "TokenExpiredError"){
+            return res.status(401).json(error);
+         }
+         
+         if(error.name === "JsonWebTokenError"){
+            return res.status(401).json(error);
+         }
+
+         return res.status(500).json({ erro: error.message });
+
+      }
+
    });
 
-}
+};
