@@ -1,15 +1,42 @@
 /*
   Warnings:
 
-  - You are about to alter the column `lastLogin` on the `users` table. The data in that column could be lost. The data in that column will be cast from `DateTime(0)` to `DateTime`.
-  - You are about to drop the column `sellDate` on the `vehicles` table. All the data in the column will be lost.
+  - You are about to alter the column `lastLogin` on the `Users` table. The data in that column could be lost. The data in that column will be cast from `DateTime(0)` to `DateTime`.
+  - You are about to drop the `vehicles` table. If the table is not empty, all the data it contains will be lost.
 
 */
 -- AlterTable
-ALTER TABLE `users` MODIFY `lastLogin` DATETIME;
+ALTER TABLE `Users` MODIFY `lastLogin` DATETIME;
 
--- AlterTable
-ALTER TABLE `vehicles` DROP COLUMN `sellDate`;
+-- DropTable
+DROP TABLE `vehicles`;
+
+-- CreateTable
+CREATE TABLE `Vehicles` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `type` VARCHAR(35) NOT NULL,
+    `model` VARCHAR(80) NOT NULL,
+    `manufacturer` VARCHAR(50) NOT NULL,
+    `year` INTEGER NOT NULL,
+    `price` FLOAT NOT NULL,
+    `listPrice` FLOAT NOT NULL,
+    `procedence` VARCHAR(30) NOT NULL,
+    `size` VARCHAR(15) NOT NULL,
+    `places` INTEGER NOT NULL,
+    `ports` INTEGER,
+    `exchange` VARCHAR(20) NOT NULL,
+    `marches` INTEGER NOT NULL,
+    `urbanConsume` FLOAT NOT NULL,
+    `roadConsume` FLOAT NOT NULL,
+    `description` TEXT NOT NULL,
+    `observation` TEXT,
+    `status` VARCHAR(10) NOT NULL,
+    `img` VARCHAR(255) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Clients` (

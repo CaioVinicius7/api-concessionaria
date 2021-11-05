@@ -43,7 +43,7 @@ model Vehicles {
   img String @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  sales Sales?
+  Sales Sales?
 }
 
 model Clients{
@@ -64,7 +64,7 @@ model Sales{
   sellValue Float @db.Float
   clients Clients @relation(fields: [idClient], references: id)
   idClient Int
-  vehicles Vehicles @relation(fields: [idVehicle], references: id)
+  Vehicles Vehicles @relation(fields: [idVehicle], references: id)
   idVehicle Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
