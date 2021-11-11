@@ -30,7 +30,6 @@ class Vehicles{
          const saleDateformatted = moment(result.Sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
          const saleCreatedAtformatted = moment(result.Sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
          const saleUpdatedAtFormatted = moment(result.Sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-
          const vehicleDataFormatted = {
             ...result,
             createdAt: createdAtFormatted,
@@ -87,7 +86,6 @@ class Vehicles{
             const saleDateformatted = moment(vehicle.Sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
             const saleCreatedAtformatted = moment(vehicle.Sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
             const saleUpdatedAtFormatted = moment(vehicle.Sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-
             const vehicleDataFormatted = {
                ...vehicle,
                createdAt: createdAtFormatted,
@@ -148,7 +146,6 @@ class Vehicles{
             const saleDateformatted = moment(vehicle.Sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
             const saleCreatedAtformatted = moment(vehicle.Sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
             const saleUpdatedAtFormatted = moment(vehicle.Sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-
             const vehicleDataFormatted = {
                ...vehicle,
                createdAt: createdAtFormatted,
@@ -208,7 +205,6 @@ class Vehicles{
             const saleDateformatted = moment(vehicle.Sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
             const saleCreatedAtformatted = moment(vehicle.Sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
             const saleUpdatedAtFormatted = moment(vehicle.Sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-
             const vehicleDataFormatted = {
                ...vehicle,
                createdAt: createdAtFormatted,

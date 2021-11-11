@@ -28,12 +28,11 @@ class Clients{
       // Verifica se existe uma venda vínculada, se existir formata os dados da venda
       if(result.Sales.length){
 
-         const sales = result.sales.map((sales) => {
+         const sales = result.Sales.map((sales) => {
 
             const saleDateformatted = moment(sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
             const saleCreatedAtformatted = moment(sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
             const saleUpdatedAtFormatted = moment(sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-
             const formattedSales = {
                ...sales,
                sellDate: saleDateformatted,
@@ -95,7 +94,6 @@ class Clients{
          if(client.Sales.length){
 
             const sales = client.Sales.map((sale) => {
-
                const saleDateformatted = moment(sale.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
                const saleCreatedAtformatted = moment(sale.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
                const saleUpdatedAtFormatted = moment(sale.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
