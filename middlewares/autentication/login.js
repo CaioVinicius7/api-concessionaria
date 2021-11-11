@@ -1,4 +1,4 @@
-const { verify, TokenExpiredError } = require("jsonwebtoken");
+const { verify } = require("jsonwebtoken");
 const blacklist = require("../../redis/blacklist");
 
 module.exports = async (req, res, next) => {
@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
       const tokenInBlacklist = await blacklist.containsToken(token);
 
       if(tokenInBlacklist){
-         return res.status(401).json({ erro: "token invalído por logout" });
+         return res.status(401).json({ erro: "token invalidado" });
       }
       
       // Verifica se o token existe
@@ -36,4 +36,4 @@ module.exports = async (req, res, next) => {
       return res.status(401).json({ erro: "token inválido" });
    }
 
-}
+};
