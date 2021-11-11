@@ -9,7 +9,6 @@ module.exports = (list) => {
 
    return {
       
-      
       // Adiciona tokens a lista
       async addToken(key, value, expireDate){
          await setAsync(key, value);
@@ -29,7 +28,6 @@ module.exports = (list) => {
          return result;
       }
 
-   }
-
+   };
 
 };

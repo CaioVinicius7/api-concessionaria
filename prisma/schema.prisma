@@ -27,8 +27,8 @@ model Vehicles {
   model String @db.VarChar(80)
   manufacturer String @db.VarChar(50)
   year Int 
-  price Float @db.Float
-  listPrice Float @db.Float
+  price String @db.VarChar(50)
+  listPrice String @db.VarChar(50)
   procedence String @db.VarChar(30) 
   size String @db.VarChar(15) 
   places Int 
@@ -43,10 +43,10 @@ model Vehicles {
   img String @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  sales Sales?
+  Sales Sales?
 }
 
-model Clients{
+model Clients {
   id Int @default(autoincrement()) @id
   fullName String @db.VarChar(100)
   email String @db.VarChar(80) @unique
@@ -55,16 +55,16 @@ model Clients{
   adress String @db.VarChar(150)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  sales Sales[]
+  Sales Sales[]
 }
 
-model Sales{
+model Sales {
   id Int @default(autoincrement()) @id
   sellDate DateTime @default(now())
-  sellValue Float @db.Float
-  clients Clients @relation(fields: [idClient], references: id)
+  sellValue String @db.VarChar(50)
+  Clients Clients @relation(fields: [idClient], references: id)
   idClient Int
-  vehicles Vehicles @relation(fields: [idVehicle], references: id)
+  Vehicles Vehicles @relation(fields: [idVehicle], references: id)
   idVehicle Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

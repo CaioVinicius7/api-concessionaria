@@ -1,279 +1,245 @@
 const moment = require("moment");
 const fs = require("fs");
 const { PrismaClient } = require("@prisma/client");
-const { type } = require("os");
 const prisma = new PrismaClient();
 
 class Vehicles{
 
-
    // Lista um usuário específico
-   async listVehicle(id, res){
+   async listVehicle(id){
 
-      try{
-
-         const result = await prisma.vehicles.findUnique({
-            where: {
-               id: Number(id)
-            },
-            include: {
-               sales: true
-            }
-         });
-
-         if(!result){
-            return res.status(204).json();
+      const result = await prisma.vehicles.findUnique({
+         where: {
+            id: Number(id)
+         },
+         include: {
+            Sales: true
          }
+      });
 
-         // Formata a data do registro
-         const createdAtFormatted = moment(result.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-         const updatedAtFormatted = moment(result.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+      if(!result){
+         return null;
+      }
+
+      // Formata a data do registro
+      const createdAtFormatted = moment(result.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+      const updatedAtFormatted = moment(result.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+
+      // Se o veículo for relaciona auma venda formata os dados dessa venda
+      if(result.Sales){
+         const saleDateformatted = moment(result.Sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
+         const saleCreatedAtformatted = moment(result.Sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
+         const saleUpdatedAtFormatted = moment(result.Sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
+
+         const vehicleDataFormatted = {
+            ...result,
+            createdAt: createdAtFormatted,
+            updatedAt: updatedAtFormatted,
+            Sales: {
+               ...result.Sales,
+               sellDate: saleDateformatted,
+               createdAt: saleCreatedAtformatted,
+               updatedAt: saleUpdatedAtFormatted
+            } 
+         };
+
+         return vehicleDataFormatted;
+
+      }
+
+      const vehicleDataFormatted = {
+         ...result,
+         createdAt: createdAtFormatted,
+         updatedAt: updatedAtFormatted
+      };
+
+      return vehicleDataFormatted;
+
+   }
+
+   // Lista todos os veiculos registrados no banco de dados
+   async listVehicles(status){
+
+      // Filtro do select
+      status = (status === "venda") ? "à venda" : (status === "vendido") ? "vendido" : "à venda";
+
+      const result = await prisma.vehicles.findMany({
+         where: {
+            status: status
+         },
+         include: {
+            Sales: true
+         }
+      });
+
+      if(!result.length){
+         return null;
+      }
+
+      // Percorre todos os registros retornados e formata a data 
+      const vehicles = result.map((vehicle) => {
+
+         const createdAtFormatted = moment(vehicle.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+         const updatedAtFormatted = moment(vehicle.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
 
          // Se o veículo for relaciona auma venda formata os dados dessa venda
-         if(result.sales){
-            const saleDateformatted = moment(result.sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const saleCreatedAtformatted = moment(result.sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const saleUpdatedAtFormatted = moment(result.sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
+         if(vehicle.Sales){
+            const saleDateformatted = moment(vehicle.Sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
+            const saleCreatedAtformatted = moment(vehicle.Sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
+            const saleUpdatedAtFormatted = moment(vehicle.Sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
 
             const vehicleDataFormatted = {
-               ...result,
+               ...vehicle,
                createdAt: createdAtFormatted,
                updatedAt: updatedAtFormatted,
-               sales: {
-                  ...result.sales,
+               Sales: {
+                  ...vehicle.Sales,
                   sellDate: saleDateformatted,
                   createdAt: saleCreatedAtformatted,
                   updatedAt: saleUpdatedAtFormatted
                } 
             };
 
-            return res.status(200).json(vehicleDataFormatted);
+            return vehicleDataFormatted;
 
          }
 
          const vehicleDataFormatted = {
-            ...result,
+            ...vehicle,
             createdAt: createdAtFormatted,
             updatedAt: updatedAtFormatted
          };
 
-         return res.status(200).json(vehicleDataFormatted);
 
-      }catch(error){
-         console.log(error)
-         return res.status(500).json(error.message);
-      }
+         return vehicleDataFormatted;
+      });
 
-   }
-
-   // Lista todos os veiculos registrados no banco de dados
-   async listVehicles(status, res){
-
-      // Filtro do select
-      status = (status === "venda") ? "à venda" : (status === "vendido") ? "vendido" : "à venda";
-      try{
-
-         const result = await prisma.vehicles.findMany({
-            where: {
-               status: status
-            },
-            include: {
-               sales: true
-            }
-         });
-   
-         if(!result.length){
-            return res.status(204).json();
-         }
-   
-         // Percorre todos os registros retornados e formata a data 
-         const vehicles = result.map((vehicle) => {
-   
-            const createdAtFormatted = moment(vehicle.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-            const updatedAtFormatted = moment(vehicle.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-
-            // Se o veículo for relaciona auma venda formata os dados dessa venda
-            if(vehicle.sales){
-               const saleDateformatted = moment(vehicle.sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-               const saleCreatedAtformatted = moment(vehicle.sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-               const saleUpdatedAtFormatted = moment(vehicle.sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-
-               const vehicleDataFormatted = {
-                  ...vehicle,
-                  createdAt: createdAtFormatted,
-                  updatedAt: updatedAtFormatted,
-                  sales: {
-                     ...vehicle.sales,
-                     sellDate: saleDateformatted,
-                     createdAt: saleCreatedAtformatted,
-                     updatedAt: saleUpdatedAtFormatted
-                  } 
-               };
-
-               return vehicleDataFormatted;
-
-            }
-
-            const vehicleDataFormatted = {
-               ...vehicle,
-               createdAt: createdAtFormatted,
-               updatedAt: updatedAtFormatted
-            };
-   
-   
-            return vehicleDataFormatted;
-         });
-   
-         return res.status(200).json(vehicles);
-
-      }catch(error){
-         return res.status(500).json(error.message);
-      }
+      return vehicles;
 
    }
 
    // Lista todos os veiculos com o tipo desejado
-   async listVehiclesByType(type, res){
+   async listVehiclesByType(type){
 
-      try{
-
-         const result = await prisma.vehicles.findMany({
-            where: {
-               type: {
-                  startsWith: type
-               },
-               status: "à venda"
+      const result = await prisma.vehicles.findMany({
+         where: {
+            type: {
+               startsWith: type
             },
-            include: {
-               sales: true
-            }
-         });
-
-         if(!result.length){
-            return res.status(204).send();
+            status: "à venda"
+         },
+         include: {
+            Sales: true
          }
+      });
 
-         // Percorre todos os registros retornados e formata a data 
-         const vehicles = result.map((vehicle) => {
+      if(!result.length){
+         return null;
+      }
 
-            const createdAtFormatted = moment(vehicle.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-            const updatedAtFormatted = moment(vehicle.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+      // Percorre todos os registros retornados e formata a data 
+      const vehicles = result.map((vehicle) => {
 
-            // Se o veículo for relaciona auma venda formata os dados dessa venda
-            if(vehicle.sales){
-               const saleDateformatted = moment(vehicle.sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-               const saleCreatedAtformatted = moment(vehicle.sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-               const saleUpdatedAtFormatted = moment(vehicle.sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
+         const createdAtFormatted = moment(vehicle.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+         const updatedAtFormatted = moment(vehicle.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
 
-               const vehicleDataFormatted = {
-                  ...vehicle,
-                  createdAt: createdAtFormatted,
-                  updatedAt: updatedAtFormatted,
-                  sales: {
-                     ...vehicle.sales,
-                     sellDate: saleDateformatted,
-                     createdAt: saleCreatedAtformatted,
-                     updatedAt: saleUpdatedAtFormatted
-                  } 
-               };
-
-               return vehicleDataFormatted;
-
-            }
+         // Se o veículo for relaciona auma venda formata os dados dessa venda
+         if(vehicle.Sales){
+            const saleDateformatted = moment(vehicle.Sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
+            const saleCreatedAtformatted = moment(vehicle.Sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
+            const saleUpdatedAtFormatted = moment(vehicle.Sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
 
             const vehicleDataFormatted = {
                ...vehicle,
                createdAt: createdAtFormatted,
-               updatedAt: updatedAtFormatted
+               updatedAt: updatedAtFormatted,
+               Sales: {
+                  ...vehicle.Sales,
+                  sellDate: saleDateformatted,
+                  createdAt: saleCreatedAtformatted,
+                  updatedAt: saleUpdatedAtFormatted
+               } 
             };
 
             return vehicleDataFormatted;
-         });
 
-         return res.status(200).json(vehicles);
+         }
 
-      }catch(error){
-         return res.status(500).json(error.message);
-      }
+         const vehicleDataFormatted = {
+            ...vehicle,
+            createdAt: createdAtFormatted,
+            updatedAt: updatedAtFormatted
+         };
+
+         return vehicleDataFormatted;
+      });
+
+      return vehicles;
 
    }
 
    // Lista todos os veiculos com o modelo desejado
-   async listVehiclesByModel(model, res){
+   async listVehiclesByModel(model){
 
-      try{
-
-
-         const result = await prisma.vehicles.findMany({
-            where: {
-               model: {
-                  startsWith: model
-               },
-               status: "à venda" 
+      const result = await prisma.vehicles.findMany({
+         where: {
+            model: {
+               startsWith: model
             },
-            include: {
-               sales: true
-            }
-         });
-
-         console.log(result)
-
-         if(!result.length){
-            return res.status(204).send();
+            status: "à venda" 
+         },
+         include: {
+            Sales: true
          }
+      });
 
-         // Percorre todos os registros retornados e formata a data 
-         const vehicles = result.map((vehicle) => {
+      if(!result.length){
+         return null;
+      }
 
-            const createdAtFormatted = moment(vehicle.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-            const updatedAtFormatted = moment(vehicle.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+      // Percorre todos os registros retornados e formata a data 
+      const vehicles = result.map((vehicle) => {
 
-            // Se o veículo for relaciona auma venda formata os dados dessa venda
-            if(vehicle.sales){
-               const saleDateformatted = moment(vehicle.sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-               const saleCreatedAtformatted = moment(vehicle.sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-               const saleUpdatedAtFormatted = moment(vehicle.sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
+         const createdAtFormatted = moment(vehicle.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+         const updatedAtFormatted = moment(vehicle.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
 
-               const vehicleDataFormatted = {
-                  ...vehicle,
-                  createdAt: createdAtFormatted,
-                  updatedAt: updatedAtFormatted,
-                  sales: {
-                     ...vehicle.sales,
-                     sellDate: saleDateformatted,
-                     createdAt: saleCreatedAtformatted,
-                     updatedAt: saleUpdatedAtFormatted
-                  } 
-               };
-
-               return vehicleDataFormatted;
-
-            }
+         // Se o veículo for relaciona auma venda formata os dados dessa venda
+         if(vehicle.Sales){
+            const saleDateformatted = moment(vehicle.Sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
+            const saleCreatedAtformatted = moment(vehicle.Sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
+            const saleUpdatedAtFormatted = moment(vehicle.Sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
 
             const vehicleDataFormatted = {
                ...vehicle,
                createdAt: createdAtFormatted,
-               updatedAt: updatedAtFormatted
+               updatedAt: updatedAtFormatted,
+               Sales: {
+                  ...vehicle.Sales,
+                  sellDate: saleDateformatted,
+                  createdAt: saleCreatedAtformatted,
+                  updatedAt: saleUpdatedAtFormatted
+               } 
             };
 
             return vehicleDataFormatted;
-         });
 
+         }
 
-         return res.status(200).json(vehicles);
+         const vehicleDataFormatted = {
+            ...vehicle,
+            createdAt: createdAtFormatted,
+            updatedAt: updatedAtFormatted
+         };
 
-      }catch(error){
-         return res.status(500).json(error.message);
-      }
+         return vehicleDataFormatted;
+      });
+
+      return vehicles;
 
    }
 
    // Adicionar um novo veiculo
-   async addVehicle(data, res){
-
-      // data.price = data.price.replace(".", ",");
-
-      // console.log(data.price);
+   async addVehicle(data){
 
       const formattedData = { 
          ...data,
@@ -286,29 +252,18 @@ class Vehicles{
          urbanConsume: parseFloat(data.urbanConsume),
          roadConsume: parseFloat(data.roadConsume),
          status: "à venda"
-      }
+      };
 
-      try{
-         
-         const result = await prisma.vehicles.create({
-            data: formattedData
-         });
+      const result = await prisma.vehicles.create({
+         data: formattedData
+      });
 
-         return res.status(201).json({
-            status: "registro concluido",
-            dados: formattedData
-          });
-
-      }catch(error){
-         return res.status(500).json(error.message);
-      }
+      return result;
 
    }
 
    // Edita os dados de um veículo
-   async editVehicle(id, data, res){
-
-      data = (data.status == "vendido") ? { ...data, sellDate: new Date() } : { ...data, sellDate: null };  
+   async editVehicle(id, data){
 
       const formattedData = { 
          ...data,
@@ -320,85 +275,71 @@ class Vehicles{
          marches: Number(data.marches),
          urbanConsume: parseFloat(data.urbanConsume),
          roadConsume: parseFloat(data.roadConsume),
-      }
+      };
 
-      try{
-
-         const result = await prisma.vehicles.findUnique({
-            where: {
-               id: Number(id)
-            }
-         });
-
-         if(!result){
-            return res.status(400).json({ erro: "nenhum usuário veículo com esse id" });
+      const result = await prisma.vehicles.findUnique({
+         where: {
+            id: Number(id)
          }
+      });
 
-         const oldImg = result.img;
-
-         // Exclui a imagem antiga que era associada ao veículo
-         fs.unlink(oldImg, (error) => {
-            if(error){
-               return res.status(404).json({ "erro": "Imagem associada com o registro não encontrada para ser excluida" });
-            }
-         });      
-         
-         const newData = await prisma.vehicles.update({
-            where: {
-               id: Number(id)
-            },
-            data: formattedData
-         });
-
-         return res.status(200).json({
-            status: "dados do veículo editado",
-            dados: formattedData
-         });
-
-      }catch(error){
-         return res.status(500).json(error.message);
+      if(!result){
+         return null;
       }
+
+      const oldImg = result.img;
+
+      // Exclui a imagem antiga que era associada ao veículo
+      fs.unlink(oldImg, (error) => {
+         if(error){
+            return { 
+               erro: "Imagem associada com o registro não encontrada para ser excluida"
+            };
+         }
+      });      
+      
+      await prisma.vehicles.update({
+         where: {
+            id: Number(id)
+         },
+         data: formattedData
+      });
+
+      return formattedData;
 
    }
 
    // Exclui os dados de um veículo
-   async deleteVehicle(id, res){
+   async deleteVehicle(id){
 
-      try{
-
-         const result = await prisma.vehicles.findUnique({
-            where: {
-               id: Number(id)
-            }
-         });
-   
-         if(!result){
-            return res.status(400).json({ erro: "nenhum usuário veículo com esse id" });
+      const result = await prisma.vehicles.findUnique({
+         where: {
+            id: Number(id)
          }
-   
-         const oldImg = result.img;
-   
-         // Apaga a imagem do diretório, caso ocorra tudo certo apaga os dados referentes ao id
-         fs.unlink(oldImg, (error) => {
-            if(error){
-               return res.status(404).json({ "erro": "Imagem associada com o registro não encontrada para ser excluida" });
-            }
-         });
-   
-         await prisma.vehicles.delete({
-            where: {
-               id: Number(id)
-            }
-         });
-   
-         return res.status(200).json({
-            status: "dados do veículo deletados",
-            id: id
-         });
+      });
 
-      }catch(error){
-         return res.status(500).json(error.message);
+      if(!result){
+         return null;
       }
+
+      const oldImg = result.img;
+
+      // Apaga a imagem do diretório, caso ocorra tudo certo apaga os dados referentes ao id
+      fs.unlink(oldImg, (error) => {
+         if(error){
+            return {
+               erro: "Imagem associada com o registro não encontrada para ser excluida"
+            };
+         }
+      });
+
+      await prisma.vehicles.delete({
+         where: {
+            id: Number(id)
+         }
+      });
+
+      return id;
 
    }
 

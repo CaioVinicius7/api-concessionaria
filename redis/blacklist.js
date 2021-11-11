@@ -2,7 +2,6 @@ const redis = require("redis");
 const blacklist = redis.createClient({ prefix: "blacklist: " });
 const listManipulator = require("./listManipulator");
 const blacklistManipulator = listManipulator(blacklist);
-// const { promisify } = require("util");
 
 const jwt = require("jsonwebtoken");
 const { createHash } = require("crypto");
@@ -27,4 +26,4 @@ module.exports = {
          return blacklistManipulator.containsToken(tokenHash);
       }
 
-}
+};

@@ -22,7 +22,7 @@ const filter = (req, file, cb) => {
       return extension === file.mimetype;
    });
 
-   if(extensions){
+   if(extension){
       return cb(null, true);
    }
    
@@ -43,4 +43,6 @@ const upload = multer({
 });
 
 
-module.exports =  { upload };
+module.exports =  { 
+   upload
+};

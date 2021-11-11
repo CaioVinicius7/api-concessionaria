@@ -7,7 +7,7 @@ module.exports = async (req, res, next) => {
       const { refreshToken } = req.body;
 
       if(!refreshToken){
-         return res.status(404).json({ erro: "é necessário enviar um refresh token" });
+         return res.status(400).json({ erro: "é necessário enviar um refresh token" });
       }
 
       // Recupera o id referente ao referesh token 
@@ -22,15 +22,8 @@ module.exports = async (req, res, next) => {
 
       next();
 
-
    }catch(error){
-
-      if(refreshToken){
-
-      }
-
-      res.status(500).json(error);
-
+      res.status(500).json(error.message);
    }
 
-}
+};
