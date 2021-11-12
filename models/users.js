@@ -182,6 +182,7 @@ class Users{
    // Verifica o email de um usuário
    async verifyEmail(token){
 
+      // Recupera o id do jwt
       const decode = verify(token, process.env.JWT_KEY);
       const { id } = decode;
 
@@ -196,6 +197,27 @@ class Users{
       
       return {
          status: "e-mail verificado com sucesso"
+      };
+
+   }
+
+   // Redefine a senha do usuário
+   async changePassword(email, password){
+
+      // Criptografa a senha
+      const encryptedPassword = await bcrypt.hash(password, 12);
+
+      await prisma.users.update({
+         where: {
+            email: email
+         },
+         data: {
+            password: encryptedPassword
+         }
+      });
+
+      return {
+         status: "senha redefinida com sucesso"
       };
 
    }

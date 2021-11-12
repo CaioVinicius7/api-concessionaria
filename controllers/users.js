@@ -1,5 +1,7 @@
 const Users = require("../models/users");
 const login = require("../middlewares/autentication/login");
+const { ResetPasswordEmail } = require("../models/email"); 
+const { sign, verify } = require("jsonwebtoken");
 const { validationRules, validationRulesEdit, validationResult } = require("../middlewares/validations/users");
 
 module.exports = (app) => {
@@ -136,5 +138,47 @@ module.exports = (app) => {
       }
 
    });
+
+   // Dispara o email para redefinir a senha
+   app.get("/resetPassword", async (req, res) => {
+
+      const { email } = req.body;
+
+      const resetPasswordToken = sign({
+         email: email,
+      }, process.env.JWT_KEY, {
+         expiresIn: "24h"
+      });
+
+      const url = process.env.BASE_URL_RESET + resetPasswordToken;
+      const resetPasswordEmail = new ResetPasswordEmail(email, url);
+      resetPasswordEmail.sendEmail().catch(console.log);
+
+      return res.status(200).json({
+         status: `Siga os passos do e-mail enviado para ${email} para redefinir sua senha`
+      });
+      
+   });
+
+   // Redefine a senha
+   app.patch("/changePassword/:token", async (req, res) => {
+
+      // Recupera o email do jwt
+      const { token } = req.params;
+      const decode = verify(token, process.env.JWT_KEY);
+      const { email } = decode;
+
+      const { password } = req.body;
+
+      try{
+         const response = await Users.changePassword(email, password);
+         return res.status(200).json(response);
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
+
+   });
+
+
 
 };

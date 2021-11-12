@@ -67,7 +67,22 @@ class VerificationEmail extends Email{
    }
 
 }
-   
 
 
-module.exports = { VerificationEmail };
+class ResetPasswordEmail extends Email{
+
+   constructor(email, url){
+
+      super();
+      this.from = `Caio Vinícius < ${user} >`;
+      this.to = email;
+      this.subject = "Solicitação para redefinir senha";
+      this.text = `Clique no link a seguir para redefinir sua senha: ${url}`;
+      this.html = `<p> Clique <a href="${url}"> aqui </a> a seguir para redefinir sua senha. </p>`;
+
+   }
+
+}
+
+
+module.exports = { VerificationEmail, ResetPasswordEmail };

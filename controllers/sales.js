@@ -50,11 +50,13 @@ module.exports = (app) => {
       const { body } = req;
 
       const data = { 
-         sellValue: parseFloat(body.sellValue),
+         ...body,
          idClient: Number(body.idClient),
          idVehicle: Number(body.idVehicle),
          sellDate: new Date(),
       }; 
+
+      console.log(data);
 
       try{
          const response = await Sales.addSale(data);
@@ -86,7 +88,6 @@ module.exports = (app) => {
       
       const data = {
          ...body,
-         sellValue: parseFloat(body.sellValue),
          idVehicle: Number(body.idVehicle),
          idClient: Number(body.idClient)
       };

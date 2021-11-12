@@ -240,8 +240,8 @@ class Vehicles{
       const formattedData = { 
          ...data,
          year: Number(data.year),
-         price: parseFloat(data.price),
-         listPrice: parseFloat(data.listPrice),
+         price: data.price,
+         listPrice: data.listPrice,
          places: Number(data.places),
          ports: Number(data.ports),
          marches: Number(data.marches),
@@ -264,8 +264,8 @@ class Vehicles{
       const formattedData = { 
          ...data,
          year: Number(data.year),
-         price: parseFloat(data.price),
-         listPrice: parseFloat(data.listPrice),
+         price: data.price,
+         listPrice: data.listPrice,
          places: Number(data.places),
          ports: Number(data.ports),
          marches: Number(data.marches),

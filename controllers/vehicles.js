@@ -88,8 +88,6 @@ module.exports = (app) => {
       // Guarda os erros de validação
       const validationErros = validationResult(req);
 
-      const imgPath = req.file.path;
-
       // Verifica se ocorreu algum erro
       if(!validationErros.isEmpty()){
          fs.unlink(imgPath, (error) => {
@@ -99,7 +97,8 @@ module.exports = (app) => {
          });
          return res.status(400).json({ errors: validationErros.array() });
       }
-
+      
+      const imgPath = req.file.path;
       const data = { ...req.body, img: imgPath };
       
       try{
