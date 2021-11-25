@@ -1,4 +1,3 @@
-const moment = require("moment");
 const fs = require("fs");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
@@ -21,38 +20,7 @@ class Vehicles{
          return null;
       }
 
-      // Formata a data do registro
-      const createdAtFormatted = moment(result.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-      const updatedAtFormatted = moment(result.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-
-      // Se o veículo for relaciona auma venda formata os dados dessa venda
-      if(result.Sales){
-         const saleDateformatted = moment(result.Sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-         const saleCreatedAtformatted = moment(result.Sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-         const saleUpdatedAtFormatted = moment(result.Sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-         const vehicleDataFormatted = {
-            ...result,
-            createdAt: createdAtFormatted,
-            updatedAt: updatedAtFormatted,
-            Sales: {
-               ...result.Sales,
-               sellDate: saleDateformatted,
-               createdAt: saleCreatedAtformatted,
-               updatedAt: saleUpdatedAtFormatted
-            } 
-         };
-
-         return vehicleDataFormatted;
-
-      }
-
-      const vehicleDataFormatted = {
-         ...result,
-         createdAt: createdAtFormatted,
-         updatedAt: updatedAtFormatted
-      };
-
-      return vehicleDataFormatted;
+      return result;
 
    }
 
@@ -75,44 +43,7 @@ class Vehicles{
          return null;
       }
 
-      // Percorre todos os registros retornados e formata a data 
-      const vehicles = result.map((vehicle) => {
-
-         const createdAtFormatted = moment(vehicle.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-         const updatedAtFormatted = moment(vehicle.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-
-         // Se o veículo for relaciona auma venda formata os dados dessa venda
-         if(vehicle.Sales){
-            const saleDateformatted = moment(vehicle.Sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const saleCreatedAtformatted = moment(vehicle.Sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const saleUpdatedAtFormatted = moment(vehicle.Sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const vehicleDataFormatted = {
-               ...vehicle,
-               createdAt: createdAtFormatted,
-               updatedAt: updatedAtFormatted,
-               Sales: {
-                  ...vehicle.Sales,
-                  sellDate: saleDateformatted,
-                  createdAt: saleCreatedAtformatted,
-                  updatedAt: saleUpdatedAtFormatted
-               } 
-            };
-
-            return vehicleDataFormatted;
-
-         }
-
-         const vehicleDataFormatted = {
-            ...vehicle,
-            createdAt: createdAtFormatted,
-            updatedAt: updatedAtFormatted
-         };
-
-
-         return vehicleDataFormatted;
-      });
-
-      return vehicles;
+      return result;
 
    }
 
@@ -135,43 +66,7 @@ class Vehicles{
          return null;
       }
 
-      // Percorre todos os registros retornados e formata a data 
-      const vehicles = result.map((vehicle) => {
-
-         const createdAtFormatted = moment(vehicle.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-         const updatedAtFormatted = moment(vehicle.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-
-         // Se o veículo for relaciona auma venda formata os dados dessa venda
-         if(vehicle.Sales){
-            const saleDateformatted = moment(vehicle.Sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const saleCreatedAtformatted = moment(vehicle.Sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const saleUpdatedAtFormatted = moment(vehicle.Sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const vehicleDataFormatted = {
-               ...vehicle,
-               createdAt: createdAtFormatted,
-               updatedAt: updatedAtFormatted,
-               Sales: {
-                  ...vehicle.Sales,
-                  sellDate: saleDateformatted,
-                  createdAt: saleCreatedAtformatted,
-                  updatedAt: saleUpdatedAtFormatted
-               } 
-            };
-
-            return vehicleDataFormatted;
-
-         }
-
-         const vehicleDataFormatted = {
-            ...vehicle,
-            createdAt: createdAtFormatted,
-            updatedAt: updatedAtFormatted
-         };
-
-         return vehicleDataFormatted;
-      });
-
-      return vehicles;
+      return result;
 
    }
 
@@ -194,43 +89,7 @@ class Vehicles{
          return null;
       }
 
-      // Percorre todos os registros retornados e formata a data 
-      const vehicles = result.map((vehicle) => {
-
-         const createdAtFormatted = moment(vehicle.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-         const updatedAtFormatted = moment(vehicle.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-
-         // Se o veículo for relaciona auma venda formata os dados dessa venda
-         if(vehicle.Sales){
-            const saleDateformatted = moment(vehicle.Sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const saleCreatedAtformatted = moment(vehicle.Sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const saleUpdatedAtFormatted = moment(vehicle.Sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const vehicleDataFormatted = {
-               ...vehicle,
-               createdAt: createdAtFormatted,
-               updatedAt: updatedAtFormatted,
-               Sales: {
-                  ...vehicle.Sales,
-                  sellDate: saleDateformatted,
-                  createdAt: saleCreatedAtformatted,
-                  updatedAt: saleUpdatedAtFormatted
-               } 
-            };
-
-            return vehicleDataFormatted;
-
-         }
-
-         const vehicleDataFormatted = {
-            ...vehicle,
-            createdAt: createdAtFormatted,
-            updatedAt: updatedAtFormatted
-         };
-
-         return vehicleDataFormatted;
-      });
-
-      return vehicles;
+      return result;
 
    }
 

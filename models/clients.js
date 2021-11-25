@@ -1,5 +1,4 @@
 require("dotenv/config");
-const moment = require("moment");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -21,48 +20,7 @@ class Clients{
          return null;
       }
 
-      // Formata a data e horário de criação e update
-      const createAtFormatted = moment(result.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-      const updatedAtFormatted = moment(result.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-
-      // Verifica se existe uma venda vínculada, se existir formata os dados da venda
-      if(result.Sales.length){
-
-         const sales = result.Sales.map((sales) => {
-
-            const saleDateformatted = moment(sales.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const saleCreatedAtformatted = moment(sales.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-            const saleUpdatedAtFormatted = moment(sales.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-            const formattedSales = {
-               ...sales,
-               sellDate: saleDateformatted,
-               createdAt: saleCreatedAtformatted,
-               updatedAt: saleUpdatedAtFormatted
-            };
-
-            return formattedSales;
-
-         });
-
-
-         const client = {
-            ...result,
-            createdAt: createAtFormatted,
-            updatedAt: updatedAtFormatted,
-            Sales: sales
-         };
-
-         return client;
-
-      }
-
-      const client = {
-         ...result,
-         createdAt: createAtFormatted,
-         updatedAt: updatedAtFormatted,
-      };
-
-      return client;
+      return result;
 
    }
 
@@ -84,53 +42,7 @@ class Clients{
          return null;
       }
 
-      const clients = result.map((client) => {
-
-         // Formata a data e horário de criação e ultimo login"
-         const createAtFormatted = moment(client.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-         const updatedAtFormatted = moment(client.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-
-         // Verifica se existe uma venda vínculada, se existir formata os dados da venda
-         if(client.Sales.length){
-
-            const sales = client.Sales.map((sale) => {
-               const saleDateformatted = moment(sale.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-               const saleCreatedAtformatted = moment(sale.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss"); 
-               const saleUpdatedAtFormatted = moment(sale.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-   
-               const formattedSales = {
-                  ...sale,
-                  sellDate: saleDateformatted,
-                  createdAt: saleCreatedAtformatted,
-                  updatedAt: saleUpdatedAtFormatted
-               };
-
-               return formattedSales;
-
-            });
-
-            const formattedClient = {
-               ...client,
-               createdAt: createAtFormatted,
-               updatedAt: updatedAtFormatted,
-               Sales: sales
-            };
-
-            return formattedClient;
-
-         }
-
-         const formattedClient = {
-            ...client,
-            createdAt: createAtFormatted,
-            updatedAt: updatedAtFormatted 
-         };
-
-         return formattedClient;      
-
-      });
-
-      return clients;
+      return result;
    
    }
 

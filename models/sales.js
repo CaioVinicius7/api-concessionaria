@@ -1,4 +1,3 @@
-const moment = require("moment");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -25,17 +24,7 @@ class Sales{
          return null;
       }
 
-      const sellDateFormatted = moment(result.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-      const createdAtFormatted = moment(result.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-      const updatedAtFormatted = moment(result.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-      const formatedSale = { 
-         ...result,
-         sellDate: sellDateFormatted,
-         createdAt: createdAtFormatted,
-         updatedAt: updatedAtFormatted
-      };
-
-      return formatedSale;
+      return result;
 
    }
 
@@ -57,23 +46,7 @@ class Sales{
          return null;
       }
 
-      const sales = result.map((sale) => {
-
-         const sellDateFormatted = moment(sale.sellDate, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-         const createdAtFormatted = moment(sale.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-         const updatedAtFormatted = moment(sale.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-         const formatedSale = { 
-            ...sale,
-            sellDate: sellDateFormatted,
-            createdAt: createdAtFormatted,
-            updatedAt: updatedAtFormatted
-         };
-
-         return formatedSale;
-
-      });
-
-      return sales;
+      return result;
 
    }
 

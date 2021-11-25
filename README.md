@@ -64,6 +64,8 @@
 | login de um usuário        | faz o login de um usuário administrativo                        | /login                        |  post  |    sem parâmetro    |
 | logout de um usuário       | faz o logout de um usuário administrativo                       | /logout                       | delete |    sem parâmetro    |
 | gerar refresh token        | gera um refresh token referente a um token de um usuário logado | /refreshToken                 |  post  |    sem parâmetro    |
+| solicitar reset de senha   | envia um email para o usuário para redefinir a senha da conta   | /resetPassword                |   get  |    sem parâmetro    |
+| reset de senha             | redefine a senha do usuário                                     | /changePassword/:token        |  patch |         não         |
 
 ---
 

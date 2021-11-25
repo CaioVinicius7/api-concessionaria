@@ -1,6 +1,7 @@
 const Sales = require("../models/sales");
 const login = require("../middlewares/autentication/login");
 const { validationRules, validationRulesEdit, validationResult } = require("../middlewares/validations/sales");
+const DataFormat = require("../functions/dataFormat");
 
 module.exports = (app) => {
 
@@ -9,11 +10,13 @@ module.exports = (app) => {
       const { id } = req.params;
 
       try{
-         const response = await Sales.listSale(id);
+         let response = await Sales.listSale(id);
 
          if(!response){
             return res.status(204).send();
          }
+
+         response = DataFormat.sale(response);
 
          return res.status(200).json(response);
       }catch(error){
@@ -24,11 +27,13 @@ module.exports = (app) => {
 
    app.get("/listSales", login, async (req, res) => {
       try{
-         const response = await Sales.listSales();
+         let response = await Sales.listSales();
 
          if(!response){
             return res.status(204).send();
          }
+
+         response = DataFormat.sales(response);
 
          return res.status(200).json(response);
       }catch(error){

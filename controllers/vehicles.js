@@ -3,6 +3,7 @@ const { validationRules, validationRulesEdit, validationResult } = require("../m
 const { upload } = require("../middlewares/uploads/uploadImage");
 const login = require("../middlewares/autentication/login");
 const fs = require("fs");
+const DataFormat = require("../functions/dataFormat");
 
 module.exports = (app) => {
 
@@ -12,11 +13,13 @@ module.exports = (app) => {
       const { id } = req.params;
 
       try{
-         const response = await Vehicles.listVehicle(id);
+         let response = await Vehicles.listVehicle(id);
 
          if(!response){
             return res.status(204).send();
          }
+
+         response = DataFormat.vehicle(response); 
 
          return res.status(200).json(response);
       }catch(error){
@@ -31,11 +34,13 @@ module.exports = (app) => {
       const { status } = req.params;
 
       try{
-         const response = await Vehicles.listVehicles(status);
+         let response = await Vehicles.listVehicles(status);
 
          if(!response){
             return res.status(204).send();
          }
+
+         response = DataFormat.vehicles(response);
 
          return res.status(200).json(response);
       }catch(error){
@@ -50,11 +55,13 @@ module.exports = (app) => {
       const { type } = req.params;
       
       try{
-         const response = await Vehicles.listVehiclesByType(type);
+         let response = await Vehicles.listVehiclesByType(type);
 
          if(!response){
             return res.status(204).send();
          }
+
+         response = DataFormat.vehicles(response);
 
          return res.status(200).json(response);
       }catch(error){
@@ -69,11 +76,13 @@ module.exports = (app) => {
       const { model } = req.params;
 
       try{
-         const response = await Vehicles.listVehiclesByModel(model);
+         let response = await Vehicles.listVehiclesByModel(model);
 
          if(!response){
             return res.status(204).send();
          }
+
+         response = DataFormat.vehicles(response);
 
          return res.status(200).json(response);
       }catch(error){

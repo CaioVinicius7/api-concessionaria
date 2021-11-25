@@ -1,8 +1,9 @@
 const Users = require("../models/users");
 const login = require("../middlewares/autentication/login");
-const { ResetPasswordEmail } = require("../models/email"); 
+const { ResetPasswordEmail } = require("../functions/email"); 
 const { sign, verify } = require("jsonwebtoken");
 const { validationRules, validationRulesEdit, validationResult } = require("../middlewares/validations/users");
+const DataFormat = require("../functions/dataFormat");
 
 module.exports = (app) => {
 
@@ -11,11 +12,13 @@ module.exports = (app) => {
       const { id } = req.params;
 
       try{
-         const response = await Users.listUser(id);
+         let response = await Users.listUser(id);
 
          if(!response){
             return res.status(204).send();
          }
+
+         response = DataFormat.user(response); 
 
          return res.status(200).json(response);
       }catch(error){
@@ -29,11 +32,13 @@ module.exports = (app) => {
       const { user } = req.params;
 
       try{
-         const response = await Users.listUsers(user);
+         let response = await Users.listUsers(user);
 
          if(!response){
             return res.status(204).send();
          }
+
+         response = DataFormat.users(response); 
 
          return res.status(200).json(response);
       }catch(error){
@@ -141,7 +146,7 @@ module.exports = (app) => {
 
    // Dispara o email para redefinir a senha
    app.get("/resetPassword", async (req, res) => {
-
+      
       const { email } = req.body;
 
       const resetPasswordToken = sign({

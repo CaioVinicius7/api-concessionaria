@@ -1,6 +1,7 @@
 const Clients = require("../models/clients");
 const login = require("../middlewares/autentication/login");
 const { validationRules, validationRulesEdit, validationResult } = require("../middlewares/validations/clients");
+const DataFormat = require("../functions/dataFormat");
 
 module.exports = (app) => {
 
@@ -9,11 +10,13 @@ module.exports = (app) => {
       const { id } = req.params;
       
       try{
-         const response = await Clients.listClient(id, res);
+         let response = await Clients.listClient(id, res);
 
          if(!response){
             return res.staus(204).send();
          }
+
+         response = DataFormat.client(response);
 
          return res.status(200).json(response);
       }catch(error){
@@ -27,11 +30,13 @@ module.exports = (app) => {
       const { client } = req.params;
 
       try{
-         const response = await Clients.listClients(client);
+         let response = await Clients.listClients(client);
 
          if(!response){
             return res.status(204).send();
          }
+
+         response = DataFormat.clients(response);
 
          return res.status(200).json(response);
       }catch(error){

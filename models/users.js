@@ -1,7 +1,6 @@
 require("dotenv/config");
-const moment = require("moment");
 const bcrypt = require("bcryptjs");
-const { VerificationEmail } = require("./email"); 
+const { VerificationEmail } = require("../functions/email"); 
 const { sign, verify} = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
@@ -21,18 +20,7 @@ class Users{
          return null;
       }
 
-      // Formata a data e horário de criação e ultimo login
-      const lastLoginFormatted =  (result.lastLogin != null) ? moment(result.lastLogin, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss") : null;
-      const createAtFormatted = moment(result.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-      const updatedAtFormatted = moment(result.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-      const user = {
-         ...result,
-         lastLogin: lastLoginFormatted,
-         createdAt: createAtFormatted,
-         updatedAt: updatedAtFormatted
-      };
-
-      return user;
+      return result;
 
    }
 
@@ -52,24 +40,7 @@ class Users{
          return null;
       }
 
-      const users = result.map((user) => {
-
-         // Formata a data e horário de criação e ultimo login
-         const lastLoginFormatted =  (user.lastLogin != null) ? moment(user.lastLogin, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss") : null;
-         const createAtFormatted = moment(user.createdAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-         const updatedAtFormatted = moment(user.updatedAt, "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-         const formattedUser = {
-            ...user,
-            lastLogin: lastLoginFormatted,
-            createdAt: createAtFormatted,
-            updatedAt: updatedAtFormatted 
-         };
-
-         return formattedUser;
-         
-      });
-
-      return users;
+      return result;
 
    }
 
