@@ -1,11 +1,9 @@
 const Clients = require("../models/clients");
-const login = require("../middlewares/autentication/login");
-const { validationRules, validationRulesEdit, validationResult } = require("../middlewares/validations/clients");
 const DataFormat = require("../functions/dataFormat");
 
-module.exports = (app) => {
+class ClientsController{
 
-   app.get("/listClient/:id", login, async (req, res) => {
+   async listClient(req, res){
 
       const { id } = req.params;
       
@@ -23,14 +21,14 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   app.get("/listClients/:client?", login, async (req, res) => {
+   async listClients(req, res){
 
-      const { client } = req.params;
+      const { name } = req.params;
 
       try{
-         let response = await Clients.listClients(client);
+         let response = await Clients.listClients(name);
 
          if(!response){
             return res.status(204).send();
@@ -43,17 +41,9 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   app.post("/addClient", validationRules, login, async (req, res) => {
-
-      // Guarda os erros de validação
-      const validationErros = validationResult(req);
-
-      // Verifica se ocorreu algum erro
-      if(!validationErros.isEmpty()){
-         return res.status(400).json({ errors: validationErros.array() });
-      }
+   async addClient(req, res){
 
       const { body: data } = req;
 
@@ -69,18 +59,10 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   app.patch("/editClient/:id", validationRulesEdit, login, async (req, res) => {
+   async editClient(req, res){
 
-      // Guarda os erros de validação
-      const validationErros = validationResult(req);
-
-      // Verifica se ocorreu algum erro
-      if(!validationErros.isEmpty()){
-         return res.status(400).json({ errors: validationErros.array() });
-      }
-      
       const { id } = req.params;
       const { body: data } = req;
 
@@ -96,9 +78,9 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   app.delete("/deleteClient/:id", login, async (req, res) => {
+   async deleteClient(req, res){
 
       const { id } = req.params;
 
@@ -111,10 +93,16 @@ module.exports = (app) => {
 
          return res.status(200).json(response);
       }catch(error){
+
+         if(error.code === "P2003"){
+            return res.status(400).json({ erro: "o cliente não pode ser excluido pois está relacionado a uma venda" });
+         }
+
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
+}
 
-};
+module.exports = new ClientsController;

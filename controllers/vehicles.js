@@ -1,14 +1,11 @@
 const Vehicles = require("../models/Vehicles");
-const { validationRules, validationRulesEdit, validationResult } = require("../middlewares/validations/Vehicles");
-const { upload } = require("../middlewares/uploads/uploadImage");
-const login = require("../middlewares/autentication/login");
 const fs = require("fs");
 const DataFormat = require("../functions/dataFormat");
 
-module.exports = (app) => {
+class vehiclesControllers{
 
-   // Lista um veiculo específico
-   app.get("/listVehicle/:id", async (req, res) => {
+   // Lista um veículo
+   async listVehicle(req, res){
 
       const { id } = req.params;
 
@@ -26,10 +23,10 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   // Lista todos os veiculos registrados
-   app.get("/listVehicles/:status?", async (req, res) => {
+   // Lista todos veículos
+   async listVehicles(req, res){
 
       const { status } = req.params;
 
@@ -47,66 +44,53 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   // Lista todos os veiculos por tipo 
-   app.get("/listVehiclesByType/:type", async (req, res) => {
+   // Lista veículos disponíveis para venda pelo tipo
+   async listVehiclesByType(req, res){
 
       const { type } = req.params;
       
       try{
          let response = await Vehicles.listVehiclesByType(type);
-
+      
          if(!response){
             return res.status(204).send();
          }
-
+      
          response = DataFormat.vehicles(response);
-
+      
          return res.status(200).json(response);
       }catch(error){
          return res.status(500).json(error.message);
       }
-      
-   });
 
-   // Lista todos os veiculos por modelo 
-   app.get("/listVehiclesByModel/:model", async (req, res) => {
-      
+   }
+
+   // Lista veículos disponíveis para venda pelo modelo
+   async listVehiclesByModel(req, res){
+
       const { model } = req.params;
 
       try{
          let response = await Vehicles.listVehiclesByModel(model);
-
+      
          if(!response){
             return res.status(204).send();
          }
-
+      
          response = DataFormat.vehicles(response);
-
+      
          return res.status(200).json(response);
       }catch(error){
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   // Adiciona um novo veiculo
-   app.post("/addVehicle", login, [upload.single("img"), validationRules], async (req, res) => {
+   // Adiciona um veículo
+   async addVehicle(req, res){
 
-      // Guarda os erros de validação
-      const validationErros = validationResult(req);
-
-      // Verifica se ocorreu algum erro
-      if(!validationErros.isEmpty()){
-         fs.unlink(imgPath, (error) => {
-            if(error){
-               res.status(404).json(error);
-            }
-         });
-         return res.status(400).json({ errors: validationErros.array() });
-      }
-      
       const imgPath = req.file.path;
       const data = { ...req.body, img: imgPath };
       
@@ -124,27 +108,13 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   // Edita um veiculo
-   app.patch("/editVehicle/:id", login, [upload.single("img"), validationRulesEdit], async (req, res) => {
-
-      // Guarda os erros de validação
-      const validationErros = validationResult(req);
-
-      const imgPath = req.file.path;
-
-      // Verifica se ocorreu algum erro
-      if(!validationErros.isEmpty()){
-         fs.unlink(imgPath, (error) => {
-            if(error){
-               res.status(404).json(error);
-            }
-         });
-         return res.status(400).json({ errors: validationErros.array() });
-      }
+   // Edita um veículo
+   async editVehicle(req, res){
 
       const id = parseInt(req.params.id);
+      const imgPath = req.file.path;
       const data = { ...req.body, img: imgPath };
 
       try{
@@ -169,10 +139,10 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   // Exclui um veiculo
-   app.delete("/deleteVehicle/:id", login, async (req, res) => {
+   // Deleta um veículo
+   async deleteVehicle(req, res){
 
       const id = req.params.id;
 
@@ -194,8 +164,16 @@ module.exports = (app) => {
          });
 
       }catch(error){
+
+         if(error.code === "P2003"){
+            return res.status(400).json({ erro: "o veículo não pode ser excluido pois está relacionado a uma venda" });
+         }
+
          return res.status(500).json(error.message);
       }
-   });
 
-};
+   }
+
+}
+
+module.exports = new vehiclesControllers;

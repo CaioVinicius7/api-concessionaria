@@ -1,21 +1,9 @@
 const Login = require("../models/login");
-const login = require("../middlewares/autentication/login");
-const { validationRules, validationRulesRt, validationResult } = require("../middlewares/validations/login");
-const refreshToken = require("../middlewares/autentication/refreshToken");
-
-module.exports = (app) => {
+class LoginController{
 
    // Faz login
-   app.post("/login", validationRules, async (req, res) => {
-
-      // Guarda os erros de validação
-      const validationErros = validationResult(req);
-
-      // Verifica se ocorreu algum erro
-      if(!validationErros.isEmpty()){
-         return res.status(400).json({ errors: validationErros.array() });
-      }
-
+   async login(req, res){
+   
       const { body: data } = req;
 
       try{
@@ -30,19 +18,11 @@ module.exports = (app) => {
       }catch(error){
          return res.status(500).json(error.message);
       }
-      
-   });
-   
-   // Gera o refresh token
-   app.post("/refreshToken", [login, refreshToken, validationRulesRt], async (req, res) => {
 
-      // Guarda os erros de validação
-      const validationErros = validationResult(req);
+   }
 
-      // Verifica se ocorreu algum erro
-      if(!validationErros.isEmpty()){
-         return res.status(400).json({ errors: validationErros.array() });
-      }
+   // Gera um refresh token
+   async refreshToken(req, res){
 
       const token = req.headers.authorization.split(" ")[1];
       const { user } = req;
@@ -55,10 +35,10 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
    // Faz logout
-   app.delete("/logout", [login, refreshToken], async (req, res) => {
+   async logout(req, res){
 
       const token = req.headers.authorization.split(" ")[1];
       
@@ -69,6 +49,8 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-};
+}
+
+module.exports = new LoginController;

@@ -1,5 +1,9 @@
 const express = require("express");
-const consign = require("consign");
+const salesRoutes = require("../routes/salesRoutes");
+const loginRoutes = require("../routes/loginRoutes");
+const clientsRoutes = require("../routes/clientsRoutes");
+const usersRoutes = require("../routes/usersRoutes");
+const vehiclesRoutes = require("../routes/vehiclesRoutes");
 
 module.exports = () => {
 
@@ -8,8 +12,12 @@ module.exports = () => {
    app.use(express.json()); 
    app.use(express.urlencoded({ extended: true })); 
 
-   // usa o consign pra incluir todos os controllers dentro de nosso app
-   consign().include("controllers").into(app);
+   // Rotas
+   app.use(salesRoutes);
+   app.use(loginRoutes);
+   app.use(clientsRoutes);
+   app.use(usersRoutes);
+   app.use(vehiclesRoutes);
 
    return app;
 

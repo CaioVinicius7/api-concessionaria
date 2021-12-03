@@ -117,6 +117,30 @@ class Clients{
          };
       }
 
+      const verifyCpf = await prisma.clients.findUnique({
+         where: {
+            cpf: data.cpf
+         }
+      });
+
+      if(verifyCpf && verifyCpf.id != id){
+         return {
+            erro: "já existe um cliente registrado com esse cpf"
+         };
+      }
+
+      const verifyEmail = await prisma.clients.findUnique({
+         where: {
+            email: data.email
+         }
+      });
+
+      if(verifyEmail && verifyEmail.id != id){
+         return {
+            erro: "já existe um cliente registrado com esse e-mail"
+         };
+      }
+
       const result = await prisma.clients.update({
          where: {
             id: Number(id)

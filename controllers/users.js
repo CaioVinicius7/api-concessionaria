@@ -1,13 +1,12 @@
 const Users = require("../models/users");
-const login = require("../middlewares/autentication/login");
 const { ResetPasswordEmail } = require("../functions/email"); 
 const { sign, verify } = require("jsonwebtoken");
-const { validationRules, validationRulesEdit, validationResult } = require("../middlewares/validations/users");
 const DataFormat = require("../functions/dataFormat");
 
-module.exports = (app) => {
+class usersControllers{
 
-   app.get("/listUser/:id", login, async (req, res) => {
+   // Lista um usuário
+   async listUser(req, res){
 
       const { id } = req.params;
 
@@ -25,12 +24,13 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   app.get("/listUsers/:user?", login, async (req, res) => {
+   // Lista um usuário
+   async listUsers(req, res){
 
       const { user } = req.params;
-
+      
       try{
          let response = await Users.listUsers(user);
 
@@ -45,17 +45,10 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
-
-   app.post("/addUser", login, validationRules, async (req, res) => {
-
-      // Guarda os erros de validação
-      const validationErros = validationResult(req);
-
-      // Verifica se ocorreu algum erro
-      if(!validationErros.isEmpty()){
-         return res.status(400).json({ errors: validationErros.array() });
-      }
+   }
+      
+   // Adiciona um usuário
+   async addUser(req, res){
 
       const { body: data } = req;
 
@@ -71,20 +64,12 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   app.patch("/editUser/:id", login, validationRulesEdit, async (req, res) => {
+   // Edita um usuário
+   async editUser(req, res){
 
-      // Guarda os erros de validação
-      const validationErros = validationResult(req);
-
-      // Verifica se ocorreu algum erro
-      if(!validationErros.isEmpty()){
-         return res.status(400).json({ errors: validationErros.array() });
-      }
-      
       const { id } = req.params;
-
       const { body: data } = req;
 
       try{
@@ -99,9 +84,10 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   app.delete("/deleteUser/:id", login, async (req, res) => {
+   // Deleta um usuário
+   async deleteUser(req, res){
 
       const { id } = req.params;
 
@@ -117,10 +103,11 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   app.get("/verifyEmail/:token", async (req, res) => {
-
+   // Verifica o email do usuário
+   async verifyEmail(req, res){
+   
       const { token } = req.params;
 
       try{
@@ -142,11 +129,11 @@ module.exports = (app) => {
 
       }
 
-   });
+   }
 
    // Dispara o email para redefinir a senha
-   app.get("/resetPassword", async (req, res) => {
-      
+   async resetPassword(req, res){
+
       const { email } = req.body;
 
       const resetPasswordToken = sign({
@@ -162,11 +149,11 @@ module.exports = (app) => {
       return res.status(200).json({
          status: `Siga os passos do e-mail enviado para ${email} para redefinir sua senha`
       });
-      
-   });
+
+   }
 
    // Redefine a senha
-   app.patch("/changePassword/:token", async (req, res) => {
+   async changePassword(req, res){
 
       // Recupera o email do jwt
       const { token } = req.params;
@@ -182,8 +169,8 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
+}
 
-
-};
+module.exports = new usersControllers;

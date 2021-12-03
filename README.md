@@ -36,37 +36,37 @@
 
 ### Rotas
 
-|       Funcionalidade       |                            Descrição                            |            Endpoint           | metódo | parâmetro opcional? |
-|:--------------------------:|:---------------------------------------------------------------:|:-----------------------------:|:------:|:-------------------:|
-| adicionar um veículo       | adiciona um novo registro referente a um veículo                | /adicionarVeiculo             |  post  |    sem parâmetro    |
-| editar um veículo          | edita um registro referente a um veículo                        | /editarVeiculo/:id            |  patch |         não         |
-| deletar um veículo         | exclui um registro referente a um veículo                       | /excluirVeiculos/:id          | delete |         não         |
-| vender veiculo             | edita o status de um veículo para vendido                       | /veiculoVendido/:id           |  patch |         não         |
-| listar veiculos            | lista todos os veículos registrados                             | /listarVeiculos/:status       |   get  |         sim         |
-| listar veículos por tipo   | lista todos os veículos registrados com um tipo específico      | /listarVeiculo/:tipo          |   get  |         não         |
-| listar veículos por modelo | lista todos os veículos registrados com um modelo específico    | /listarVeiculosModelo/:modelo |   get  |         não         |
-| listar veículo por id      | lista um veículos especifico por id                             | /listarVeiculo/:id            |   get  |         não         |
-| adicionar um usuário       | adiciona um novo registro referente a um usuário administrativo | /adicionarUsuario             |  post  |    sem parâmetro    |
-| editar um usuário          | edita um registro referente a um usuário administrativo         | /editarUsuario/:id            |  patch |         não         |
-| deletar um usuário         | exclui um registro referente a um usuário administrativo        | /excluirUsuario/:id           | delete |         não         |
-| listar todos os usuários   | lista todos os usuários administrativos registrados             | /listarUsuarios/:usuario      |   get  |         sim         |
-| listar usuário por id      | lista um usuário administrativo por id                          | /listarUsuario/:id            |   get  |         não         |
-| adicionar um cliente       | adiciona um novo registro referente um cliente                  | /addClient                    |  post  |    sem parâmetro    |
-| editar um cliente          | edita um registro referente a um cliente                        | /editClient/:id               |  patch |         não         |
-| deletar um cliente         | exclui um registro referente a um cliente                       | /deleteClient/:id             | delete |         não         |
-| lsitar todos os clientes   | lista todos os clientes registados                              | /listClientes/:client         |   get  |         sim         |
-| listar cliente por id      | lista um cliente por id                                         | /listClient/:id               |   get  |         não         |
-| adicionar uma venda        | adiciona um novo registro referente a uma venda                 | /addSale                      |  post  |    sem parâmetro    |
-| editar uma venda           | edita um registro referente a uma venda                         | /editSale/:id                 |  patch |         não         |
-| deletar uma venda          | exclui um registro referente a uma venda                        | /deleteSale/:id               | delete |         não         |
-| listar todas as vendas     | lista todas as vendas registradas                               | /listSales                    |   get  |    sem parâmetro    |
-| listar uma venda por id    | lista uma venda por id                                          | listSale/:id                  |   get  |         não         |
-| login de um usuário        | faz o login de um usuário administrativo                        | /login                        |  post  |    sem parâmetro    |
-| logout de um usuário       | faz o logout de um usuário administrativo                       | /logout                       | delete |    sem parâmetro    |
-| gerar refresh token        | gera um refresh token referente a um token de um usuário logado | /refreshToken                 |  post  |    sem parâmetro    |
-| solicitar reset de senha   | envia um email para o usuário para redefinir a senha da conta   | /resetPassword                |   get  |    sem parâmetro    |
-| reset de senha             | redefine a senha do usuário                                     | /changePassword/:token        |  patch |         não         |
 
+|        Funcionalidade       |                            Descrição                            |         Endpoint        | metódo | parâmetro opcional? |
+|:---------------------------:|:---------------------------------------------------------------:|:-----------------------:|:------:|:-------------------:|
+| adicionar um veículo        | adiciona um novo registro referente a um veículo                | /vehicles               |  post  |    sem parâmetro    |
+| editar um veículo           | edita um registro referente a um veículo                        | /vehicles/:id           |  patch |         não         |
+| deletar um veículo          | exclui um registro referente a um veículo                       | /vehicles/:id           | delete |         não         |
+| listar veiculos             | lista todos os veículos registrados                             | /vehicles/:status       |   get  |         sim         |
+| listar veículos por tipo    | lista todos os veículos registrados com um tipo específico      | /vehiclesByType/:type   |   get  |         não         |
+| listar veículos por modelo  | lista todos os veículos registrados com um modelo específico    | /vehiclesByModel/:model |   get  |         não         |
+| listar veículo por id       | lista um veículos especifico por id                             | /vehicle/:id            |   get  |         não         |
+| adicionar um usuário        | adiciona um novo registro referente a um usuário administrativo | /users                  |  post  |    sem parâmetro    |
+| editar um usuário           | edita um registro referente a um usuário administrativo         | /users/:id              |  patch |         não         |
+| deletar um usuário          | exclui um registro referente a um usuário administrativo        | /users/:id              | delete |         não         |
+| listar todos os usuários    | lista todos os usuários administrativos registrados             | /users/:users           |   get  |         sim         |
+| listar usuário por id       | lista um usuário administrativo por id                          | /user/:id               |   get  |         não         |
+| verificar e-mail de usuário | define o e-mail do usuário como verificado                      | /verifyEmail/:token     |   get  |         não         |
+| solicitar reset de senha    | envia um email para o usuário para redefinir a senha da conta   | /resetPassword          |   get  |    sem parâmetro    |
+| reset de senha              | redefine a senha do usuário                                     | /changePassword/:token  |  patch |         não         |
+| adicionar um cliente        | adiciona um novo registro referente um cliente                  | /clients                |  post  |    sem parâmetro    |
+| editar um cliente           | edita um registro referente a um cliente                        | /clients/:id            |  patch |         não         |
+| deletar um cliente          | exclui um registro referente a um cliente                       | /clients/:id            | delete |         não         |
+| lsitar todos os clientes    | lista todos os clientes registados                              | /clients/:name          |   get  |         sim         |
+| listar cliente por id       | lista um cliente por id                                         | /client/:id             |   get  |         não         |
+| adicionar uma venda         | adiciona um novo registro referente a uma venda                 | /sales                  |  post  |    sem parâmetro    |
+| editar uma venda            | edita um registro referente a uma venda                         | /sales/:id              |  patch |         não         |
+| deletar uma venda           | exclui um registro referente a uma venda                        | /sales/:id              | delete |         não         |
+| listar todas as vendas      | lista todas as vendas registradas                               | /sales                  |   get  |    sem parâmetro    |
+| listar uma venda por id     | lista uma venda por id                                          | /sale/:id               |   get  |         não         |
+| login de um usuário         | faz o login de um usuário administrativo                        | /login                  |  post  |    sem parâmetro    |
+| logout de um usuário        | faz o logout de um usuário administrativo                       | /logout                 | delete |    sem parâmetro    |
+| gerar refresh token         | gera um refresh token referente a um token de um usuário logado | /refreshToken           |  post  |    sem parâmetro    |
 ---
 
 ### Pré-requisitos
@@ -106,7 +106,6 @@ As seguintes ferramentas foram usadas na construção do projeto:
 - [Node.js](https://nodejs.org/en/)
 - [express](https://expressjs.com/pt-br/)
 - [moment.js](https://momentjs.com/)
-- [consign](https://github.com/jarradseers/consign)
 - [express-validator](https://express-validator.github.io/docs/)
 - [multer](https://github.com/expressjs/multer)
 - [jwt](https://github.com/auth0/node-jsonwebtoken#reademe)

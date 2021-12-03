@@ -1,12 +1,11 @@
 const Sales = require("../models/sales");
-const login = require("../middlewares/autentication/login");
-const { validationRules, validationRulesEdit, validationResult } = require("../middlewares/validations/sales");
 const DataFormat = require("../functions/dataFormat");
 
-module.exports = (app) => {
+class SalesController{
 
-   app.get("/listSale/:id", login, async (req, res) => {
-
+   // Lista uma venda
+   async listSale(req, res){
+     
       const { id } = req.params;
 
       try{
@@ -23,9 +22,11 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   app.get("/listSales", login, async (req, res) => {
+   // Lista todas as vendas
+   async listSales(res){
+
       try{
          let response = await Sales.listSales();
 
@@ -39,55 +40,39 @@ module.exports = (app) => {
       }catch(error){
          return res.status(500).json(error.message);
       }
-   });
 
-   // Adiciona uma nova venda
-   app.post("/addSale", validationRules, login, async (req, res) => {
+   }
 
-      // Guarda os erros de validação
-      const validationErros = validationResult(req);
-
-      // Verifica se ocorreu algum erro
-      if(!validationErros.isEmpty()){
-         return res.status(400).json({ errors: validationErros.array() });
-      }
+   // Adiciona uma venda
+   async addSale(req, res){
 
       const { body } = req;
-
+   
       const data = { 
          ...body,
          idClient: Number(body.idClient),
          idVehicle: Number(body.idVehicle),
          sellDate: new Date(),
       }; 
-
-      console.log(data);
-
+   
+   
       try{
          const response = await Sales.addSale(data);
          
          if(response.erro){
             return res.status(400).json(response);
          }
-
+   
          return res.status(201).json(response);
       }catch(error){
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
    // Edita os dados de uma venda
-   app.patch("/editSale/:id", validationRulesEdit, login, async (req, res) => {
-
-      // Guarda os erros de validação
-      const validationErros = validationResult(req);
-
-      // Verifica se ocorreu algum erro
-      if(!validationErros.isEmpty()){
-         return res.status(400).json({ errors: validationErros.array() });
-      }
-
+   async editSale(req, res){
+     
       const { id } = req.params;
       const { body } = req;
       
@@ -109,11 +94,11 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-   // Deleta uma venda
-   app.delete("/deleteSale/:id", login, async (req, res) => {
-
+   // Exclui os daods de uma venda
+   async deleteSale(req, res){
+   
       const { id } = req.params;
 
       try{
@@ -128,6 +113,8 @@ module.exports = (app) => {
          return res.status(500).json(error.message);
       }
 
-   });
+   }
 
-};
+}
+
+module.exports = new SalesController;
