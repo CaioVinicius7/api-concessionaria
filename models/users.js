@@ -1,6 +1,5 @@
 require("dotenv/config");
 const bcrypt = require("bcryptjs");
-const { VerificationEmail } = require("../functions/email"); 
 const { sign, verify} = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
@@ -63,7 +62,13 @@ class Users{
       const encryptedPassword = await bcrypt.hash(data.password, 12);
 
       // Salva os dados formatados 
-      const formattedData = { ...data, password: encryptedPassword, lastLogin: null, verifiedEmail: "no" };
+      const formattedData = {
+         fullName: data.fullName,
+         email: data.email,
+         password: encryptedPassword,
+         lastLogin: null,
+         verifiedEmail: "no"
+       };
 
       const result = await prisma.users.create({
          data: formattedData
@@ -75,15 +80,17 @@ class Users{
          expiresIn: "72h"
       });
 
-      const url = process.env.BASE_URL + verificationToken;
-      const verificationEmail = new VerificationEmail(formattedData, url);
-      verificationEmail.sendEmail().catch(console.log);
-
       return {
-         status: "registro concluido",
-         dados: { 
-            usuario: result.fullName,
-            email: result.email
+         info: {
+            status: "registro concluido",
+            dados: { 
+               usuario: result.fullName,
+               email: result.email
+            }
+         },
+         sendMail: {
+            verificationToken: verificationToken,
+            formattedData: formattedData
          }
       };
 
@@ -102,6 +109,22 @@ class Users{
          return { 
             erro: "nenhum usuário registrado com esse id"
          };
+      }
+
+      if(data.email){
+
+         const verifyEmail = await prisma.users.findUnique({
+            where: {
+               email: data.email
+            }
+         });
+   
+         if(verifyEmail){
+            return {
+               erro: "e-mail já registrado"
+            };
+         }
+
       }
 
       const result = await prisma.users.update({

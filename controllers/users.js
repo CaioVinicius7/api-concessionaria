@@ -1,5 +1,6 @@
+require("dotenv/config");
 const Users = require("../models/users");
-const { ResetPasswordEmail } = require("../functions/email"); 
+const { VerificationEmail, ResetPasswordEmail } = require("../functions/email"); 
 const { sign, verify } = require("jsonwebtoken");
 const DataFormat = require("../functions/dataFormat");
 
@@ -52,6 +53,13 @@ class usersControllers{
 
       const { body: data } = req;
 
+      // Match de senha
+      if(data.password !== data.confirmPassword){
+         return res.status(400).json({
+            erro: "As senhas precisam ser iguais"
+         });
+      }
+
       try{
          const response = await Users.addUser(data);
 
@@ -59,7 +67,15 @@ class usersControllers{
             return res.status(400).json(response);
          }
 
-         return res.status(201).json(response);
+         // Envio de email ao cadastrar usuário
+         const { verificationToken } = response.sendMail;
+         const { formattedData } = response.sendMail;
+
+         const url = process.env.BASE_URL + verificationToken;
+         const verificationEmail = new VerificationEmail(formattedData, url);
+         verificationEmail.sendEmail().catch(console.log);
+
+         return res.status(201).json(response.info);
       }catch(error){
          return res.status(500).json(error.message);
       }

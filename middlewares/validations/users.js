@@ -5,6 +5,7 @@ const validationRules = [
    body("fullName").isLength({min: 3}).withMessage("O campo nome completo deve ter pelo menos 3 caracteres"),
    body("email").isEmail().withMessage("O campo e-mail deve conter um e-mail válido"),
    body("password").isLength({min: 8}).withMessage("O campo senha deve conter pelo menos 8 caracteres"),
+   body("confirmPassword").isLength({min: 8}).withMessage("O campo confirmar senha deve conter pelo menos 8 caracteres"),
    body("registerDate").custom((value) => {
       if(value || value === null || value === ""){
          return Promise.reject("O campo data de registro não pode existir");
