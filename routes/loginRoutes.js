@@ -15,8 +15,6 @@ router.post("/login", validationRules, async (req, res) => {
       return res.status(400).json({ errors: validationErros.array() });
    }
 
-   console.log(Login);
-
    await Login.login(req, res);
 
 });

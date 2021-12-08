@@ -1,5 +1,11 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const { 
+   verifyVehicleById,
+   verifyClientById,
+   verifySaleOfVehicle, 
+   verifySaleById 
+} = require("../functions/dataVerify");
 
 class Sales{
 
@@ -53,30 +59,25 @@ class Sales{
    // Adiciona uma nova venda
    async addSale(data){
 
-      // Verifica se o veículo existe 
-      const verify = await prisma.vehicles.findUnique({
-         where: {
-            id: data.idVehicle
-         }
-      });
+      // Verifica se o cliente existe 
+      const verifyClient = await verifyClientById(data.idClient);
 
-      if(!verify){
-         return { 
-            erro: "nenhum veículo encontrado com esse id"
-         };
+      if(verifyClient.erro){
+         return verifyClient;
       }
-      
-      // Verifica se o veículo já não foi vendido 
-      const verifySale = await prisma.sales.findFirst({
-         where: {
-            idVehicle: data.idVehicle
-         }
-      });
 
-      if(verifySale){
-         return {
-            erro: "o veículo já está registrado como vendido"
-         };
+      // Verifica se o veículo existe 
+      const verifyVehicle = await verifyVehicleById(data.idVehicle);
+
+      if(verifyVehicle.erro){
+         return verifyVehicle;
+      }
+
+      // Verifica se o veículo foi vendido
+      const verifyVehicleSale = await verifySaleOfVehicle(data.idVehicle);
+
+      if(verifyVehicleSale.erro){
+         return verifyVehicleSale;
       }
 
       await prisma.vehicles.update({
@@ -106,44 +107,40 @@ class Sales{
    // Edita uma venda
    async editSale(id, data){
 
-      // Verifica se a venda existe
-      const verify = await prisma.sales.findUnique({
-         where: {
-            id: Number(id)
-         }
-      });
+      // Verifica se a venda existe 
+      const verifySale = await verifySaleById(id);
 
-      if(!verify){
-         return {
-            erro: "nenhuma venda cadastrada com esse id"
-         };
+      if(verifySale.erro){
+         return verifySale;
+      }
+      
+      // Verifica se o cliente existe 
+      const verifyClient = await verifyClientById(data.idClient);
+
+      if(verifyClient.erro){
+         return verifyClient;
       }
 
-      // Verifica se o veículo escolhido já não está relacionado a outra venda
-      const verifyVehicle = await prisma.vehicles.findUnique({
-         where: {
-            id: data.idVehicle
-         } 
-      });
+      // Verifica se o veículo existe 
+      const verifyVehicle = await verifyVehicleById(data.idVehicle);
 
-      if(!verifyVehicle){
-         return {
-         erro: "nenhum veículo registrado com esse id" 
-         };
+      if(verifyVehicle.erro){
+         return verifyVehicle;
       }
 
-      if(verifyVehicle.status === "vendido" && verifyVehicle.id !== data.idVehicle){
-         return {
-            erro: "esse veículo já está relacionado a uma venda"
-         };
+      // Verifica se o veículo foi vendido
+      const verifyVehicleSale = await verifySaleOfVehicle(data.idVehicle);
+
+      if(verifyVehicleSale.erro){
+         return verifyVehicleSale;
       }
 
-      if(verify.idVehicle !== data.idVehicle){
+      if(verifySale.idVehicle !== data.idVehicle){
 
          // Edita o dado do veículo antigo para à venda
          await prisma.vehicles.update({
             where: {
-               id: Number(verify.idVehicle)
+               id: Number(verifySale.idVehicle)
             },
             data: {
                status: "à venda"
@@ -162,7 +159,6 @@ class Sales{
 
       }
 
-
       // Edita a venda
       await prisma.sales.update({
          where: {
@@ -180,22 +176,17 @@ class Sales{
    // Deleta uma venda
    async deleteSale(id){
 
-      const result = await prisma.sales.findUnique({
-         where: {
-            id: Number(id)
-         }
-      }); 
+      // Verifica se o cliente existe 
+      const verify = await verifySaleById(id);
 
-      if(!result){
-         return {
-            erro: "nenhuma venda cadastrada com essse id"
-         };
+      if(verify.erro){
+         return verify;
       }
 
       // Define o status do veículo para à venda novamente
       await prisma.vehicles.update({
          where: {
-            id: Number(result.idVehicle)
+            id: Number(verify.idVehicle)
          },
          data: {
             status: "à venda"

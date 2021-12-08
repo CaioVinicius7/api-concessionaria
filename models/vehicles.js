@@ -1,6 +1,7 @@
 const fs = require("fs");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const { verifyVehicleById } = require("../functions/dataVerify");
 
 class Vehicles{
 
@@ -132,17 +133,15 @@ class Vehicles{
          roadConsume: parseFloat(data.roadConsume),
       };
 
-      const result = await prisma.vehicles.findUnique({
-         where: {
-            id: Number(id)
-         }
-      });
+      // Verifica se existe um registro com o id recebido
+      const verify = await verifyVehicleById(id);
 
-      if(!result){
-         return null;
+      if(verify.erro){
+         fs.unlink(data.img, () => {});
+         return verify;
       }
 
-      const oldImg = result.img;
+      const oldImg = verify.img;
 
       // Exclui a imagem antiga que era associada ao veículo
       fs.unlink(oldImg, (error) => {
@@ -167,17 +166,14 @@ class Vehicles{
    // Exclui os dados de um veículo
    async deleteVehicle(id){
 
-      const result = await prisma.vehicles.findUnique({
-         where: {
-            id: Number(id)
-         }
-      });
+      // Verifica se existe um registro com o id recebido
+      const verify = await verifyVehicleById(id);
 
-      if(!result){
-         return null;
+      if(verify.erro){
+         return verify;
       }
 
-      const oldImg = result.img;
+      const oldImg = verify.img;
 
       // Apaga a imagem do diretório, caso ocorra tudo certo apaga os dados referentes ao id
       fs.unlink(oldImg, (error) => {

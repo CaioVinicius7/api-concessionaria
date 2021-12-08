@@ -65,6 +65,7 @@ class SalesController{
    
          return res.status(201).json(response);
       }catch(error){
+         console.log(error);
          return res.status(500).json(error.message);
       }
 

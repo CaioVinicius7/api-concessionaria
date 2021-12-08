@@ -121,10 +121,6 @@ class vehiclesControllers{
 
          const response = await Vehicles.editVehicle(id, data);
 
-         if(!response){
-            return res.status(400).json({ erro: "nenhum veículo encontrado com esse id" });
-         }
-
          if(response.erro){
             return res.status(400).json(response);
          }
@@ -135,6 +131,7 @@ class vehiclesControllers{
          });
          
       }catch(error){
+         console.log(error);
          fs.unlink(imgPath);
          return res.status(500).json(error.message);
       }

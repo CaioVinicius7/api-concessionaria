@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const { sign, verify} = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const { verifyUserByEmail, verifyUserById } = require("../functions/dataVerify");
 
 class Users{
 
@@ -46,16 +47,10 @@ class Users{
    // Adiciona um novo usuário
    async addUser(data){
 
-      const verifyEmail = await prisma.users.findUnique({
-         where: {
-            email: data.email
-         }
-      });
+      const verify = await verifyUserByEmail(data.email);
 
-      if(verifyEmail){
-         return {
-            erro: "e-mail já registrado"
-         };
+      if(verify){
+         return verify;
       }
 
       // Criptografa a senha
@@ -74,6 +69,7 @@ class Users{
          data: formattedData
       });
 
+      // Cria o token de confirmação de email
       const verificationToken = sign({
          id: result.id,
       }, process.env.JWT_KEY, {
@@ -99,32 +95,20 @@ class Users{
    // Edita os dados de um usuários
    async editUser(id, data){
 
-      const verify = await prisma.users.findUnique({
-         where: {
-            id: Number(id)
-         }
-      });
+      // Verifica se existe um registro com o id recebido
+      const verify = await verifyUserById(id);
 
-      if(!verify){
-         return { 
-            erro: "nenhum usuário registrado com esse id"
-         };
+      if(verify.erro){
+         return verify;
       }
 
+      // Verifica se o email já não está sendo usado
       if(data.email){
+         const verifyEmail = await verifyUserByEmail(data.email, id);
 
-         const verifyEmail = await prisma.users.findUnique({
-            where: {
-               email: data.email
-            }
-         });
-   
          if(verifyEmail){
-            return {
-               erro: "e-mail já registrado"
-            };
+            return verifyEmail;
          }
-
       }
 
       const result = await prisma.users.update({
@@ -144,17 +128,11 @@ class Users{
    // Exclui os dados de um usuário
    async deleteUser(id){
 
+      // Verifica se existe um registro com o id recebido
+      const verify = await verifyUserById(id);
 
-      const verify = await prisma.users.findUnique({
-         where: {
-            id: Number(id)
-         }
-      });
-
-      if(!verify){
-         return {
-            erro: "nenhum usuário registrado com esse id"
-         };
+      if(verify.erro){
+         return verify;
       }
 
       const result = await prisma.users.delete({

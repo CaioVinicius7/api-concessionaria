@@ -1,6 +1,12 @@
 require("dotenv/config");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const { 
+   verifyClientByEmail,
+   verifyClientByPhone,
+   verifyClientByCpf,
+   verifyClientById
+} = require("../functions/dataVerify");
 
 class Clients{
 
@@ -49,40 +55,22 @@ class Clients{
    // Adiciona um novo cliente
    async addClient(data){
 
-      const verifyEmail = await prisma.clients.findUnique({
-         where: {
-            email: data.email
-         }
-      });
+      const verify = await verifyClientByEmail(data.email);
 
-      if(verifyEmail){
-         return {
-            erro: "e-mail já registrado"
-         };
+      if(verify.erro){
+         return verify;
       }
 
-      const verifyPhone = await prisma.clients.findUnique({
-         where: {
-            phone: data.phone
-         }
-      });
+      const verifyPhone = await verifyClientByPhone(data.phone);
 
-      if(verifyPhone){
-         return { 
-            erro: "telefone já registrado"
-         };
+      if(verifyPhone.erro){
+         return verifyPhone;
       }
 
-      const verifyCpf = await prisma.clients.findUnique({
-         where: {
-            cpf: data.cpf
-         }
-      });
+      const verifyCpf = await verifyClientByCpf(data.cpf);
 
-      if(verifyCpf){
-         return { 
-            erro: "CPF já registrado"
-         };
+      if(verifyCpf.erro){
+         return verifyCpf;
       }
 
       const result = await prisma.clients.create({
@@ -105,40 +93,28 @@ class Clients{
    // Edita os dados de um cliente
    async editClient(id, data){
 
-      const verify = await prisma.clients.findUnique({
-         where: {
-            id: Number(id)
-         }
-      });
+      const verify = await verifyClientById(id);
 
-      if(!verify){
-         return {
-            erro: "nenhum cliente registrado com esse id"
-         };
+      if(verify.erro){
+         return verify;
       }
 
-      const verifyCpf = await prisma.clients.findUnique({
-         where: {
-            cpf: data.cpf
-         }
-      });
+      const verifyEmail = await verifyClientByEmail(data.email, id);
 
-      if(verifyCpf && verifyCpf.id != id){
-         return {
-            erro: "já existe um cliente registrado com esse cpf"
-         };
+      if(verifyEmail.erro){
+         return verifyEmail;
       }
 
-      const verifyEmail = await prisma.clients.findUnique({
-         where: {
-            email: data.email
-         }
-      });
+      const verifyPhone = await verifyClientByPhone(data.phone, id);
 
-      if(verifyEmail && verifyEmail.id != id){
-         return {
-            erro: "já existe um cliente registrado com esse e-mail"
-         };
+      if(verifyPhone.erro){
+         return verifyPhone;
+      }
+      
+      const verifyCpf = await verifyClientByCpf(data.cpf, id);
+
+      if(verifyCpf.erro){
+         return verifyCpf;
       }
 
       const result = await prisma.clients.update({
@@ -158,16 +134,10 @@ class Clients{
    // Exclui os dados de um cliente
    async deleteClient(id){
 
-      const verify = await prisma.clients.findUnique({
-         where: {
-            id: Number(id)
-         }
-      });
+      const verify = await verifyClientById(id);
 
-      if(!verify){
-         return {
-            erro: "nenhum cliente registrado com esse id"
-         };
+      if(verify.erro){
+         return verify;
       }
 
       const result = await prisma.clients.delete({
