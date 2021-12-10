@@ -199,6 +199,14 @@ class usersControllers{
       const { email } = decode;
 
       const { password } = req.body;
+      const { confirmPassword } = req.body;
+
+      // Match de senha
+      if(password !== confirmPassword){
+         return res.status(400).json({
+            erro: "As senhas precisam ser iguais"
+         });
+      }
 
       try{
          const response = await Users.changePassword(email, password);

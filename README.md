@@ -1,6 +1,6 @@
 # API concessionária
 
-### Essa API foi desenvolvida a fins de estudo e aprendizado, ela conta com um CRUD de veículos, um CRUD de usuários, sistema de autenticação, sistema de envio de email e algumas outras funcionalidades
+### Essa API foi desenvolvida a fins de estudo e aprendizado, ela se trata de um sistema administrativo de uma concessionária, onde os usuários do sistema podem gerenciar os dados de veículos, clientes e vendas de modo fácil e rápido, assim visando agilizar e organizar o dia a dia em uma concessionária.
 
 <h2 align="center"> 
 	🚧 Em construção... 🚧
@@ -72,6 +72,8 @@
 ---
 
 ### OBS: Todas os endpoints de listagem de dados dvem receber o parâmetro de paginação (page), caso contrário ese irá listar apenas os cinco primeiros registros
+
+### __Clique [aqui](./routes/BODY_INFOS.md) para ver o corpo (body) e mais detalhes sobre cada rota__
 
 ---
 

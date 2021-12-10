@@ -94,8 +94,11 @@ class vehiclesControllers{
    // Adiciona um veículo
    async addVehicle(req, res){
 
-      const imgPath = req.file.path;
-      const data = { ...req.body, img: imgPath };
+      let { body: data } = req;
+      
+      if(req.file){
+         data = { ...data, img: req.file.path };
+      }
       
       try{
 
@@ -107,7 +110,9 @@ class vehiclesControllers{
          });
 
       }catch(error){
-         fs.unlink(imgPath);
+         if(req.file){
+            fs.unlink(req.file.path, () => {});
+         }
          return res.status(500).json(error.message);
       }
 
@@ -117,8 +122,11 @@ class vehiclesControllers{
    async editVehicle(req, res){
 
       const id = parseInt(req.params.id);
-      const imgPath = req.file.path;
-      const data = { ...req.body, img: imgPath };
+      let { body: data } = req;
+      
+      if(req.file){
+         data = { ...data, img: req.file.path };
+      }
 
       try{
 
@@ -135,7 +143,9 @@ class vehiclesControllers{
          
       }catch(error){
          console.log(error);
-         fs.unlink(imgPath);
+         if(req.file){
+            fs.unlink(req.file.path, () => {});
+         }
          return res.status(500).json(error.message);
       }
 
@@ -144,7 +154,7 @@ class vehiclesControllers{
    // Deleta um veículo
    async deleteVehicle(req, res){
 
-      const id = req.params.id;
+      const { id } = req.params;
 
       try{
 

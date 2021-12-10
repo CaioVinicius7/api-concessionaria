@@ -164,16 +164,11 @@ class Vehicles{
          return verify;
       }
 
-      const oldImg = verify.img;
+      const { img } = verify;
 
-      // Exclui a imagem antiga que era associada ao veículo
-      fs.unlink(oldImg, (error) => {
-         if(error){
-            return { 
-               erro: "Imagem associada com o registro não encontrada para ser excluida"
-            };
-         }
-      });      
+      if(img.includes("uploads\\")){
+         fs.unlink(img, () => {});      
+      }
       
       await prisma.vehicles.update({
          where: {
@@ -196,16 +191,11 @@ class Vehicles{
          return verify;
       }
 
-      const oldImg = verify.img;
+      const { img } = verify;
 
-      // Apaga a imagem do diretório, caso ocorra tudo certo apaga os dados referentes ao id
-      fs.unlink(oldImg, (error) => {
-         if(error){
-            return {
-               erro: "Imagem associada com o registro não encontrada para ser excluida"
-            };
-         }
-      });
+      if(img.includes("uploads\\")){
+         fs.unlink(img, () => {});
+      }
 
       await prisma.vehicles.delete({
          where: {

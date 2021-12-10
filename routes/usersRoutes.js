@@ -50,7 +50,7 @@ router.get("/verifyEmail/:token", async (req, res) => {
    await Users.verifyEmail(req, res);
 });
 
-router.get("/resetPassword", async (req, res) => {
+router.post("/resetPassword", async (req, res) => {
    await Users.resetPassword(req, res);
 });
 

@@ -142,6 +142,9 @@ class Users{
          }
       }
 
+      // Criptografa a senha
+      data.password = await bcrypt.hash(data.password, 12);
+
       const result = await prisma.users.update({
          where: {
             id: Number(id)

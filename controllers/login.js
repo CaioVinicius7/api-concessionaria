@@ -28,7 +28,7 @@ class LoginController{
       const { user } = req;
 
       try{
-         const response = await Login.refresh(user, token, res);
+         const response = await Login.refresh(user, token);
          return res.set(response.header),
                 res.status(200).json(response.body);
       }catch(error){
