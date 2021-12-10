@@ -27,13 +27,35 @@ class usersControllers{
 
    }
 
-   // Lista um usuário
+   // Lista todos usuário 
    async listUsers(req, res){
 
-      const { user } = req.params;
+      const { page } = req.params;
       
       try{
-         let response = await Users.listUsers(user);
+         let response = await Users.listUsers(page);
+
+         if(!response){
+            return res.status(204).send();
+         }
+
+         response = DataFormat.users(response); 
+
+         return res.status(200).json(response);
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
+
+   }
+
+   // Lista usuários por nome
+   async listUsersByName(req, res){
+
+      const { user } = req.params;
+      const { page } = req.params;
+      
+      try{
+         let response = await Users.listUsersByName(user, page);
 
          if(!response){
             return res.status(204).send();

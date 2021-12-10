@@ -10,15 +10,15 @@ router.get("/vehicle/:id", async (req, res) => {
    await Vehicles.listVehicle(req, res);
 });
 
-router.get("/vehicles/:status?", async (req, res) => {
+router.get("/vehicles/:status?/:page?", async (req, res) => {
    await Vehicles.listVehicles(req, res);
 });
 
-router.get("/vehiclesByType/:type?", async (req, res) => {
+router.get("/vehiclesByType/:type?/:page?", async (req, res) => {
    await Vehicles.listVehiclesByType(req, res);
 });
 
-router.get("/vehiclesByModel/:model?", async (req, res) => {
+router.get("/vehiclesByModel/:model?/:page?", async (req, res) => {
    await Vehicles.listVehiclesByModel(req, res);
 });
 

@@ -24,10 +24,41 @@ class Users{
 
    }
 
-   // Lista todos os usuários ou usuários pelo nome (filtro opcional)
-   async listUsers(user){
+   // Lista todos os usuários
+   async listUsers(page){
+
+      page = (page) ? page : 1;
+
+      // Paginação
+      const items = 5;
+      const skip = (page !== 1) ? (page-1)*items : 0;
 
       const result = await prisma.users.findMany({
+         skip: skip,
+         take: items
+      });
+
+
+      if(!result.length){
+         return null;
+      }
+
+      return result;
+
+   }
+
+   // Lista usuários por nome
+   async listUsersByName(user, page){
+
+      page = (page) ? page : 1;
+
+      // Paginação
+      const items = 5;
+      const skip = (page !== 1) ? (page-1)*items : 0;
+
+      const result = await prisma.users.findMany({
+         skip: skip,
+         take: items,
          where: {
             fullName: {
                startsWith: user
@@ -49,6 +80,7 @@ class Users{
 
       const verify = await verifyUserByEmail(data.email);
 
+      console.log(verify);
       if(verify){
          return verify;
       }

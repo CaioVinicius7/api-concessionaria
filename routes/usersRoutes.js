@@ -8,8 +8,12 @@ router.get("/user/:id", login, async (req, res) => {
    await Users.listUser(req, res);
 });
 
-router.get("/users/:user?", login, async (req, res) => {
+router.get("/users/:page?", login, async (req, res) => {
    await Users.listUsers(req, res);
+});
+
+router.get("/users/:user/:page?", login, async (req, res) => {
+   await Users.listUsersByName(req, res);
 });
 
 router.post("/users", login, validationRules, async (req, res) => {

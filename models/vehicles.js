@@ -26,12 +26,19 @@ class Vehicles{
    }
 
    // Lista todos os veiculos registrados no banco de dados
-   async listVehicles(status){
+   async listVehicles(status, page){
 
       // Filtro do select
       status = (status === "venda") ? "à venda" : (status === "vendido") ? "vendido" : "à venda";
+      page = (page) ? page : 1;
+
+      // Paginação
+      const items = 5;
+      const skip = (page !== 1) ? (page-1)*items : 0;
 
       const result = await prisma.vehicles.findMany({
+         skip: skip,
+         take: items,
          where: {
             status: status
          },
@@ -49,9 +56,17 @@ class Vehicles{
    }
 
    // Lista todos os veiculos com o tipo desejado
-   async listVehiclesByType(type){
+   async listVehiclesByType(type, page){
+
+      page = (page) ? page : 1;
+
+      // Paginação
+      const items = 5;
+      const skip = (page !== 1) ? (page-1)*items : 0;
 
       const result = await prisma.vehicles.findMany({
+         skip: skip,
+         take: items,
          where: {
             type: {
                startsWith: type
@@ -72,9 +87,17 @@ class Vehicles{
    }
 
    // Lista todos os veiculos com o modelo desejado
-   async listVehiclesByModel(model){
+   async listVehiclesByModel(model, page){
+
+      page = (page) ? page : 1;
+
+      // Paginação
+      const items = 5;
+      const skip = (page !== 1) ? (page-1)*items : 0;
 
       const result = await prisma.vehicles.findMany({
+         skip: skip,
+         take: items,
          where: {
             model: {
                startsWith: model

@@ -25,10 +25,12 @@ class SalesController{
    }
 
    // Lista todas as vendas
-   async listSales(res){
+   async listSales(req, res){
+
+      const { page } = req.params;
 
       try{
-         let response = await Sales.listSales();
+         let response = await Sales.listSales(page);
 
          if(!response){
             return res.status(204).send();

@@ -29,9 +29,10 @@ class vehiclesControllers{
    async listVehicles(req, res){
 
       const { status } = req.params;
+      const { page } = req.params;
 
       try{
-         let response = await Vehicles.listVehicles(status);
+         let response = await Vehicles.listVehicles(status, page);
 
          if(!response){
             return res.status(204).send();
@@ -50,9 +51,10 @@ class vehiclesControllers{
    async listVehiclesByType(req, res){
 
       const { type } = req.params;
+      const { page } = req.params;
       
       try{
-         let response = await Vehicles.listVehiclesByType(type);
+         let response = await Vehicles.listVehiclesByType(type, page);
       
          if(!response){
             return res.status(204).send();
@@ -71,9 +73,10 @@ class vehiclesControllers{
    async listVehiclesByModel(req, res){
 
       const { model } = req.params;
+      const { page } = req.params;
 
       try{
-         let response = await Vehicles.listVehiclesByModel(model);
+         let response = await Vehicles.listVehiclesByModel(model,page);
       
          if(!response){
             return res.status(204).send();

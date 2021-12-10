@@ -8,8 +8,8 @@ router.get("/sale/:id", login, async (req, res) => {
    await Sales.listSale(req, res);
 });
 
-router.get("/sales", login, async (req, res) => {
-   await Sales.listSales(res);
+router.get("/sales/:page?", login, async (req, res) => {
+   await Sales.listSales(req, res);
 });
 
 router.post("/sales", validationRules, login, async (req, res) => {

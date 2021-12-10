@@ -35,9 +35,17 @@ class Sales{
    }
 
    // Lista todas as vendas
-   async listSales(){
+   async listSales(page){
+
+      page = (page) ? page : 1;
+
+      // Paginação
+      const items = 5;
+      const skip = (page !== 1) ? (page-1)*items : 0;
       
       const result = await prisma.sales.findMany({
+         skip: skip,
+         take: items,
          include: {
             Clients: {
                select: {

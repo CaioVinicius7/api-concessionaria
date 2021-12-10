@@ -25,10 +25,31 @@ class ClientsController{
 
    async listClients(req, res){
 
-      const { name } = req.params;
+      const { page } = req.params;
 
       try{
-         let response = await Clients.listClients(name);
+         let response = await Clients.listClients(page);
+
+         if(!response){
+            return res.status(204).send();
+         }
+
+         response = DataFormat.clients(response);
+
+         return res.status(200).json(response);
+      }catch(error){
+         return res.status(500).json(error.message);
+      }
+
+   }
+
+   async listClientsByName(req, res){
+
+      const { name } = req.params;
+      const { page } = req.params;
+
+      try{
+         let response = await Clients.listClientsByName(name, page);
 
          if(!response){
             return res.status(204).send();

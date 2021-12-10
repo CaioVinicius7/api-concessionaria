@@ -30,10 +30,43 @@ class Clients{
 
    }
 
-   // Lista todos os clients ou um cliente pelo nome (filtro opcional)
-   async listClients(clientName){
+   // Lista todos os clients 
+   async listClients(page){
+
+      page = (page) ? page : 1;
+
+      // Paginação
+      const items = 5;
+      const skip = (page !== 1) ? (page-1)*items : 0;
 
       const result = await prisma.clients.findMany({
+         skip: skip,
+         take: items,
+         include: {
+            Sales: true,
+         }
+      });
+
+      if(!result.length){
+         return null;
+      }
+
+      return result;
+   
+   }
+
+   // Lista todos os clients com o nome escolhido
+   async listClientsByName(clientName, page){
+
+      page = (page) ? page : 1;
+
+      // Paginação
+      const items = 5;
+      const skip = (page !== 1) ? (page-1)*items : 0;
+
+      const result = await prisma.clients.findMany({
+         skip: skip,
+         take: items,
          where: {
             fullName: {
                startsWith: clientName

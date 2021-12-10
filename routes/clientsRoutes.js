@@ -9,8 +9,12 @@ router.get("/client/:id", login, async (req, res) => {
    await Clients.listClient(req, res);
 });
 
-router.get("/clients/:name?", login, async (req, res) => {
+router.get("/clients/:page?", login, async (req, res) => {
    await Clients.listClients(req, res);
+});
+
+router.get("/clients/:name/:page?", login, async (req, res) => {
+   await Clients.listClientsByName(req, res);
 });
 
 router.post("/clients", login, validationRules, async (req, res) => {
