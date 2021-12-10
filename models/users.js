@@ -80,8 +80,7 @@ class Users{
 
       const verify = await verifyUserByEmail(data.email);
 
-      console.log(verify);
-      if(verify){
+      if(verify.erro){
          return verify;
       }
 
@@ -138,7 +137,7 @@ class Users{
       if(data.email){
          const verifyEmail = await verifyUserByEmail(data.email, id);
 
-         if(verifyEmail){
+         if(verifyEmail.erro){
             return verifyEmail;
          }
       }

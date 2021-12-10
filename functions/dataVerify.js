@@ -21,7 +21,7 @@ class DataVerify{
          };
       }
 
-      return null;
+      return {};
 
    }
 
@@ -43,7 +43,7 @@ class DataVerify{
          };
       }
 
-      return null;
+      return {};
 
    }
 
@@ -65,7 +65,7 @@ class DataVerify{
          };
       }
 
-      return null;
+      return {};
 
    }
 
