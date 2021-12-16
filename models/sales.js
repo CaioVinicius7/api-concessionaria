@@ -177,7 +177,6 @@ class Sales{
    // Deleta uma venda
    async deleteSale(id){
 
-      // Verifica se o cliente existe 
       const verify = await verifySaleById(id);
 
       if(verify.erro){

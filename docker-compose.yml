@@ -1,0 +1,45 @@
+# Versão do docker compose
+version: "3"
+
+# Serviços
+services:
+  mysql:
+    build:
+      dockerfile: ./docker/mysql.dockerfile
+      context: .
+    image: caiovinicius7/mysql
+    container_name: mysql
+    ports: 
+      - "3307:3306"
+    networks: 
+      - local-network
+
+  redis:
+    build:
+      dockerfile: ./docker/redis.dockerfile
+      context: .
+    image: caiovinicius7/redis
+    container_name: redis
+    ports: 
+      - "6379:6379"
+    networks: 
+      - local-network
+
+  node:
+    build:
+      dockerfile: ./docker/node.dockerfile
+      context: .
+    image: caiovinicius7/node
+    container_name: node
+    ports:
+      - "3000:3000"
+    networks: 
+      - local-network
+    depends_on: 
+      - "mysql"
+      - "redis"
+
+# Network
+networks:
+  local-network:
+    driver: bridge
