@@ -93,7 +93,7 @@ $ git clone <https://github.com/CaioVinicius7/api-concessionaria.git>
 $ cd api-concessionaria
 
 # Instale as dependências
-$ npm install
+$ npm install ou yarn
 
 # Rode as migrations
 $ npx prisma migrate deploy
@@ -102,7 +102,7 @@ $ npx prisma migrate deploy
 $ npx prisma db seed
 
 # Execute a aplicação
-$ npm start
+$ npm start ou yarn start
 
 # O servidor inciará na porta:3000 - acesse <http://localhost:3000>
 ```

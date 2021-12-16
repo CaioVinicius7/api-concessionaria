@@ -14,10 +14,8 @@ router.get("/sales/:page?", login, async (req, res) => {
 
 router.post("/sales", validationRules, login, async (req, res) => {
 
-      // Guarda os erros de validação
       const validationErros = validationResult(req);
    
-      // Verifica se ocorreu algum erro
       if(!validationErros.isEmpty()){
          return res.status(400).json({ errors: validationErros.array() });
       }
@@ -28,10 +26,8 @@ router.post("/sales", validationRules, login, async (req, res) => {
 
 router.patch("/sales/:id", validationRulesEdit, login, async (req, res) => {
 
-   // Guarda os erros de validação
    const validationErros = validationResult(req);
 
-   // Verifica se ocorreu algum erro
    if(!validationErros.isEmpty()){
       return res.status(400).json({ errors: validationErros.array() });
    }

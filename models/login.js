@@ -22,7 +22,6 @@ class Login{
          return null;
       }
 
-      // Compara a senha
       const compareResult = await bcrypt.compare(data.password, result.password);
 
       if(!compareResult){
@@ -45,7 +44,6 @@ class Login{
       const expireDateRefreshToken = moment().add(5, "d").unix();
       await whitelist.addToken(refreshToken, result.id, expireDateRefreshToken);
 
-      // Cria o token
       const token = jwt.sign({
          id: result.id,
          fullName: result.fullName,
@@ -83,7 +81,6 @@ class Login{
       await whitelist.addToken(refreshToken, id, expireDateRefreshToken);
       await blacklist.addToken(token);
 
-      // Cria o token
       const newToken = jwt.sign({
          id: id,
          fullName: fullName,

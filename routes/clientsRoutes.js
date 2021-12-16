@@ -19,10 +19,8 @@ router.get("/clients/:name/:page?", login, async (req, res) => {
 
 router.post("/clients", login, validationRules, async (req, res) => {
 
-   // Guarda os erros de validação
    const validationErros = validationResult(req);
 
-   // Verifica se ocorreu algum erro
    if(!validationErros.isEmpty()){
       return res.status(400).json({ errors: validationErros.array() });
    }
@@ -32,10 +30,8 @@ router.post("/clients", login, validationRules, async (req, res) => {
 
 router.patch("/clients/:id", login, validationRulesEdit, async (req, res) => {
 
-   // Guarda os erros de validação
    const validationErros = validationResult(req);
 
-   // Verifica se ocorreu algum erro
    if(!validationErros.isEmpty()){
       return res.status(400).json({ errors: validationErros.array() });
    }

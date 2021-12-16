@@ -9,16 +9,13 @@ module.exports = (list) => {
 
    return {
       
-      // Adiciona tokens a lista
       async addToken(key, value, expireDate){
          await setAsync(key, value);
          list.expireat(key, expireDate);
       },
-      // Recupera o valor de um token
       async findValue(key){
          return await getAsync(key);
       },
-      // Verifica se o token está na lista
       async containsToken(key){
          const result = await existsAsync(key);
          return result === 1;

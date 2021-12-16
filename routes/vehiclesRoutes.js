@@ -27,10 +27,8 @@ router.post("/vehicles", login, upload.single("img"), validationRules, async (re
    // Verifica se foi passada uma img via form
    if(!req.file){
 
-      // Guarda os erros de validação
       const validationErros = validationResult(req);
          
-      // Verifica se ocorreu algum erro
       if(!validationErros.isEmpty()){
          return res.status(400).json({ errors: validationErros.array() });
       }
@@ -39,10 +37,8 @@ router.post("/vehicles", login, upload.single("img"), validationRules, async (re
 
       const { path: imgPath } = req.file;
    
-      // Guarda os erros de validação
       const validationErros = validationResult(req);
    
-      // Verifica se ocorreu algum erro
       if(!validationErros.isEmpty()){
          fs.unlink(imgPath, (error) => {
             if(error){
@@ -56,7 +52,6 @@ router.post("/vehicles", login, upload.single("img"), validationRules, async (re
 
    await Vehicles.addVehicle(req, res);
    
-
 });
 
 router.patch("/vehicles/:id", login, upload.single("img"), validationRulesEdit, async (req, res) => {
@@ -64,10 +59,8 @@ router.patch("/vehicles/:id", login, upload.single("img"), validationRulesEdit, 
    // Verifica se foi passada uma img via form
    if(!req.file){
 
-      // Guarda os erros de validação
       const validationErros = validationResult(req);
          
-      // Verifica se ocorreu algum erro
       if(!validationErros.isEmpty()){
          return res.status(400).json({ errors: validationErros.array() });
       }
@@ -76,10 +69,8 @@ router.patch("/vehicles/:id", login, upload.single("img"), validationRulesEdit, 
 
       const { path: imgPath } = req.file;
    
-      // Guarda os erros de validação
       const validationErros = validationResult(req);
    
-      // Verifica se ocorreu algum erro
       if(!validationErros.isEmpty()){
          fs.unlink(imgPath, (error) => {
             if(error){

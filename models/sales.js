@@ -67,21 +67,18 @@ class Sales{
    // Adiciona uma nova venda
    async addSale(data){
 
-      // Verifica se o cliente existe 
       const verifyClient = await verifyClientById(data.idClient);
 
       if(verifyClient.erro){
          return verifyClient;
       }
 
-      // Verifica se o veículo existe 
       const verifyVehicle = await verifyVehicleById(data.idVehicle);
 
       if(verifyVehicle.erro){
          return verifyVehicle;
       }
 
-      // Verifica se o veículo foi vendido
       const verifyVehicleSale = await verifySaleOfVehicle(data.idVehicle);
 
       if(verifyVehicleSale.erro){
@@ -115,28 +112,24 @@ class Sales{
    // Edita uma venda
    async editSale(id, data){
 
-      // Verifica se a venda existe 
       const verifySale = await verifySaleById(id);
 
       if(verifySale.erro){
          return verifySale;
       }
       
-      // Verifica se o cliente existe 
       const verifyClient = await verifyClientById(data.idClient);
 
       if(verifyClient.erro){
          return verifyClient;
       }
 
-      // Verifica se o veículo existe 
       const verifyVehicle = await verifyVehicleById(data.idVehicle);
 
       if(verifyVehicle.erro){
          return verifyVehicle;
       }
 
-      // Verifica se o veículo foi vendido
       const verifyVehicleSale = await verifySaleOfVehicle(data.idVehicle);
 
       if(verifyVehicleSale.erro){

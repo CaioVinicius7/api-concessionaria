@@ -7,10 +7,8 @@ const Login = require("../controllers/login");
 
 router.post("/login", validationRules, async (req, res) => {
 
-   // Guarda os erros de validação
    const validationErros = validationResult(req);
 
-   // Verifica se ocorreu algum erro
    if(!validationErros.isEmpty()){
       return res.status(400).json({ errors: validationErros.array() });
    }
@@ -21,10 +19,8 @@ router.post("/login", validationRules, async (req, res) => {
 
 router.post("/refreshToken", [login, refreshToken, validationRulesRt], async (req, res) => {
 
-   // Guarda os erros de validação
    const validationErros = validationResult(req);
 
-   // Verifica se ocorreu algum erro
    if(!validationErros.isEmpty()){
       return res.status(400).json({ errors: validationErros.array() });
    }
